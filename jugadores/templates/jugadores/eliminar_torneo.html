@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h4>Confirmar eliminación de torneo</h4>
+        </div>
+        <div class="card-body">
+            <p class="lead">¿Estás seguro que deseas eliminar el torneo <strong>{{ torneo.nombre }}</strong>?</p>
+            <p class="text-danger">Esta acción no se puede deshacer y se perderán todos los datos relacionados con este torneo.</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Sí, eliminar torneo</button>
+                <a href="{% url 'lista_torneos' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

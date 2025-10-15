@@ -1,0 +1,33 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Estadísticas por Torneo{% endblock %}
+{% block contenido %}
+<div class="container mt-4">
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% else %}
+    <h3 class="mb-3">Estadísticas - {{ torneo.nombre }}</h3>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Jugador</th>
+          <th>Goles</th>
+          <th>Asistencias</th>
+          <th>Amarillas</th>
+          <th>Rojas</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in datos %}
+        <tr>
+          <td>{{ d.jugador.nombre }} {{ d.jugador.apellido }}</td>
+          <td>{{ d.goles }}</td>
+          <td>{{ d.asistencias }}</td>
+          <td>{{ d.amarillas }}</td>
+          <td>{{ d.rojas }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+</div>
+{% endblock %}

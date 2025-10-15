@@ -1,0 +1,147 @@
+{% extends 'jugadores/base.html' %}
+
+{% block titulo %}Resultados de Partidos{% endblock %}
+
+{% block contenido %}
+<style>
+    .score-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+    }
+    .team-logo {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+    }
+    .score {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #FFFFFF;
+    }
+    .goleadores-list {
+        margin-top: 15px;
+        padding-left: 0;
+        list-style: none;
+    }
+    .goleadores-list li {
+        color: #CFD8DC;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="container py-5">
+    <h1 class="text-center mb-4 text-white">Resultados y Próximos Partidos</h1>
+    <form method="get" class="row mb-4 g-2 align-items-end justify-content-center">
+      <div class="col-md-4">
+        <select class="form-select" name="equipo">
+          <option value="">Todos los equipos</option>
+          {% for equipo in equipos %}
+            <option value="{{ equipo.id }}" {% if equipo_id == equipo.id|stringformat:'s' %}selected{% endif %}>{{ equipo.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <input type="date" class="form-control" name="fecha" value="{{ fecha|default:'' }}">
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+      </div>
+    </form>
+    <!-- Sección de Próximos Partidos -->
+    <div class="mb-5">
+        <h2 class="border-bottom pb-2 mb-3 text-white">Próximos Partidos</h2>
+        <div class="row row-cols-1 g-3">
+            {% if proximos_partidos %}
+                {% for partido in proximos_partidos %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm border-info" style="background-color: #7B1FA2; outline: black solid 5px;">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center">
+                                        {% if partido.equipo_local.logo %}
+                                            <img src="{{ partido.equipo_local.logo.url }}" class="team-logo me-3" alt="Logo de {{ partido.equipo_local }}">
+                                        {% endif %}
+                                        <h5 class="card-title text-white mb-0">{{ partido.equipo_local }}</h5>
+                                    </div>
+                                    <h5 class="card-title text-white mb-0">vs</h5>
+                                    <div class="d-flex align-items-center">
+                                        <h5 class="card-title text-white mb-0">{{ partido.equipo_visitante }}</h5>
+                                        {% if partido.equipo_visitante.logo %}
+                                            <img src="{{ partido.equipo_visitante.logo.url }}" class="team-logo ms-3" alt="Logo de {{ partido.equipo_visitante }}">
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <p class="card-text text-white-50">Fecha: {{ partido.fecha|date:"F j, Y" }}</p>
+                                <p class="card-text text-white-50">Lugar: {{ partido.lugar }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-white">No hay próximos partidos programados.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Sección de Partidos Pasados -->
+    <div>
+        <h2 class="border-bottom pb-2 mb-3 text-white">Partidos Jugados</h2>
+        <div class="row row-cols-1 g-3">
+            {% if partidos_pasados %}
+                {% for partido in partidos_pasados %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm border-success" style="background-color: #7B1FA2; outline: black solid 5px;">
+                            <div class="card-body">
+                                <div class="score-container mb-3">
+                                    <div class="text-center">
+                                        {% if partido.equipo_local.logo %}
+                                            <img src="{{ partido.equipo_local.logo.url }}" class="team-logo mb-2" alt="Logo de {{ partido.equipo_local }}">
+                                        {% endif %}
+                                        <h5 class="card-title text-white">{{ partido.equipo_local }}</h5>
+                                    </div>
+                                    <span class="score">{{ partido.marcador_local }} - {{ partido.marcador_visitante }}</span>
+                                    <div class="text-center">
+                                        {% if partido.equipo_visitante.logo %}
+                                            <img src="{{ partido.equipo_visitante.logo.url }}" class="team-logo mb-2" alt="Logo de {{ partido.equipo_visitante }}">
+                                        {% endif %}
+                                        <h5 class="card-title text-white">{{ partido.equipo_visitante }}</h5>
+                                    </div>
+                                </div>
+                                <p class="card-text text-center text-white-50">Fecha: {{ partido.fecha|date:"F j, Y" }}</p>
+                                     <h6 class="text-white-50 mt-4">Goleadores:</h6>
+                                {% with goleadores_list=partido.estadistica_set.all %}
+                                    {% comment %}
+                                        Mostramos los goleadores solo si la lista no está vacía y
+                                        al menos un jugador tiene goles registrados.
+                                    {% endcomment %}
+                                    {% if goleadores_list %}
+                                        {% with tiene_goleadores=False %}
+                                            {% for stat in goleadores_list %}
+                                                {% if stat.goles > 0 %}
+                                                    {% if not tiene_goleadores %}
+                                                        <ul class="goleadores-list">
+                                                        {% comment %} Variable para rastrear si ya se encontró un goleador {% endcomment %}
+                                                        {% with tiene_goleadores=True %}{% endwith %}
+                                                    {% endif %}
+                                                    <li>- {{ stat.jugador.nombre }} {{ stat.jugador.apellido }} ({{ stat.goles }} goles)</li>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if tiene_goleadores %}
+                                                </ul>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-white">No hay partidos jugados.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'jugadores/base.html' %}
+
+{% block titulo %}Agregar Foto a la Galería{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <h1 class="text-center mb-4">Agregar Foto a la Galería</h1>
+        <div class="card p-4 shadow-lg">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-light btn-lg">Subir Foto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% extends 'jugadores/base.html' %}
+
+{% block titulo %}Agregar Foto a la Galería{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <h1 class="text-center mb-4">Agregar Foto a la Galería</h1>
+        <div class="card p-4 shadow-lg">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-light btn-lg">Subir Foto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

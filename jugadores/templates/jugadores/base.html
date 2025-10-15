@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Mi Equipo de Fútbol{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            background-color: #4A148C; /* Morado oscuro del logo */
+            color: #E8EAF6;
+            font-family: 'Inter', sans-serif;
+        }
+        .card {
+            outline: black solid 5px; /* Borde negro para las tarjetas */
+            background-color: #7B1FA2; /* Morado un poco más claro para las tarjetas */
+            color: #FFFFFF;
+            border-color: #9C27B0; /* Borde con un morado más vibrante */
+            border-radius: 1rem; /* Bordes redondeados */
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px); /* Efecto de elevación al pasar el cursor */
+        }
+        .card-title {
+            color: #FFFFFF; /* Título en blanco */
+            font-weight: bold;
+        }
+        .card-text, .card-text small {
+            color: #CFD8DC !important; /* Texto más claro para contraste */
+        }
+        .navbar {
+            background-color: #260D4D !important; /* Morado oscuro para la barra de navegación */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Añade una sombra sutil para profundidad */
+        }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-size: 2rem; /* Aumenta el tamaño del texto */
+            color: #E8EAF6 !important;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        .navbar-brand:hover {
+            color: #FFFFFF !important; /* Un blanco más brillante al pasar el cursor */
+        }
+        .navbar-brand img {
+            height: 100px; /* Ajusta el tamaño del logo */
+            margin-right: 10px; /* Espacio entre el logo y el texto */
+        }
+        .nav-link {
+            color: #E8EAF6 !important;
+            position: relative;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #FFFFFF !important; /* Blanco más brillante al pasar el cursor */
+            transform: translateY(-2px); /* Efecto de "levantar" el enlace */
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: #E8EAF6; /* Usa tu color */
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%; /* La línea se expande completamente al pasar el cursor */
+        }
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28232, 234, 246, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" aria-label="Navegación principal">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-3" href="{% url 'inicio' %}" aria-label="Ir al inicio">
+                {% load static %}
+                <img src="{% static 'jugadores/images/logo.png' %}" alt="Logo de Furia Nocturna FC" style="height: 70px; box-shadow: 0 2px 8px #260D4D;">
+                <span class="fw-bold" style="font-size: 2rem; color: #E8EAF6;">Furia Nocturna FC</span>
+            </a>
+            <span class="d-none d-md-block ms-4 fw-bold text-warning" style="font-size: 1.2rem; letter-spacing: 2px;">¡Vamos Furia!</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir menú">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="{% url 'inicio' %}" aria-label="Inicio"><i class="bi bi-house-door-fill"></i> Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="{% url 'resultados_partidos' %}" aria-label="Partidos"><i class="bi bi-trophy-fill"></i> Partidos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="{% url 'tabla_clasificacion' %}" aria-label="Tabla de clasificación"><i class="bi bi-bar-chart-fill"></i> Tabla</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="/estadisticas_equipo/" aria-label="Estadísticas del equipo"><i class="bi bi-graph-up"></i> Equipo</a>
+                    </li>
+                    {# Enlace para que los jugadores registren pagos - visible solo para usuarios autenticados que pertenezcan al grupo 'jugadores' #}
+                    {% if user.is_authenticated %}
+                        {# Renderizamos el enlace dentro del loop: si el usuario pertenece al grupo 'jugadores' aparecerá el enlace. #}
+                        {% for g in user.groups.all %}
+                            {% if g.name == 'jugadores' %}
+                                <li class="nav-item">
+                                    <a class="nav-link px-3" href="{% url 'registrar_pago' %}" aria-label="Registrar pago"><i class="bi bi-wallet2"></i> Pagos</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if user.is_staff %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Opciones de staff">
+                          <i class="bi bi-gear-fill"></i> Staff
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <li><a class="dropdown-item" href="{% url 'dashboard_staff' %}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="{% url 'lista_pagos' %}"><i class="bi bi-wallet2"></i> Pagos</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="{% url 'agregar_partido' %}">Nuevo Partido</a></li>
+                          <li><a class="dropdown-item" href="{% url 'agregar_jugador' %}">Nuevo Jugador</a></li>
+                          <li><a class="dropdown-item" href="{% url 'agregar_equipo' %}">Nuevo Equipo</a></li>
+                          <li><a class="dropdown-item" href="{% url 'agregar_torneo' %}">Nuevo Torneo</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="{% url 'lista_jugadores' %}">Ver Jugadores</a></li>
+                          <li><a class="dropdown-item" href="{% url 'lista_equipos' %}">Ver Equipos</a></li>
+                          <li><a class="dropdown-item" href="{% url 'lista_torneos' %}">Ver Torneos</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="{% url 'admin:index' %}" target="_blank">Panel Admin</a></li>
+                        </ul>
+                      </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav ms-auto gap-2">
+                    {% if user.is_authenticated %}
+                        {% if user.jugador %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'perfil_jugador' user.jugador.id %}" aria-label="Perfil de jugador">Hola, {{ user.username }}
+                                    {% if user.is_superuser %}
+                                        <span class="badge bg-warning text-dark">Administrador</span>
+                                    {% elif user.is_staff %}
+                                        <span class="badge" style="background-color: #7B1FA2; color: #FFFFFF;">Staff</span>
+                                    {% elif user.groups.all|length > 0 %}
+                                        {% with found_jugador=False %}
+                                            {% for grupo in user.groups.all %}
+                                                {% if grupo.name == 'jugadores' and not found_jugador %}
+                                                    <span class="badge" style="background-color: #FFD600; color: #260D4D;">Jugador</span>
+                                                    {% with found_jugador=True %}{% endwith %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if not found_jugador %}
+                                                <span class="badge" style="background-color: #CFD8DC; color: #260D4D;">Usuario</span>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% else %}
+                                        <span class="badge" style="background-color: #CFD8DC; color: #260D4D;">Usuario</span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <span class="nav-link text-white-50">Hola, {{ user.username }}
+                                    {% if user.is_superuser %}
+                                        <span class="badge bg-warning text-dark">Administrador</span>
+                                    {% elif user.is_staff %}
+                                        <span class="badge" style="background-color: #7B1FA2; color: #FFFFFF;">Staff</span>
+                                    {% elif user.groups.all|length > 0 %}
+                                        {% with found_jugador=False %}
+                                            {% for grupo in user.groups.all %}
+                                                {% if grupo.name == 'jugadores' and not found_jugador %}
+                                                    <span class="badge" style="background-color: #FFD600; color: #260D4D;">Jugador</span>
+                                                    {% with found_jugador=True %}{% endwith %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if not found_jugador %}
+                                                <span class="badge" style="background-color: #CFD8DC; color: #260D4D;">Usuario</span>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% else %}
+                                        <span class="badge" style="background-color: #CFD8DC; color: #260D4D;">Usuario</span>
+                                    {% endif %}
+                                </span>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cerrar_sesion' %}" aria-label="Cerrar sesión">Cerrar Sesión</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'iniciar_sesion' %}" aria-label="Iniciar sesión"><i class="bi bi-box-arrow-in-right"></i></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'registro' %}" aria-label="Registrarse"><i class="bi bi-person-plus-fill"></i></a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4" id="main-content" tabindex="-1">
+        {% block contenido %}
+        {% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

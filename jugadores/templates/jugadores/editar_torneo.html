@@ -1,0 +1,116 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Editar Torneo{% endblock %}
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <h1 class="text-center mb-4">Editar Torneo</h1>
+        <div class="card p-4 shadow-lg">
+            <div class="card-body">
+                <form method="post" id="form-editar-torneo-{{ torneo.id }}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="d-grid gap-2 mt-4">
+                        <div class="d-flex gap-2">
+                          <button type="button" class="btn btn-secondary btn-lg" data-bs-toggle="modal" data-bs-target="#modalAgregarEquipos{{ torneo.id }}">Agregar Equipos</button>
+                          <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#confirmModalEditarTorneo{{ torneo.id }}">Guardar Cambios</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Modal de confirmación -->
+                 <div class="modal fade" id="confirmModalEditarTorneo{{ torneo.id }}" tabindex="-1" aria-labelledby="confirmModalLabelEditarTorneo{{ torneo.id }}" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabelEditarTorneo{{ torneo.id }}">Confirmar edición</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                      </div>
+                      <div class="modal-body">
+                        ¿Estás seguro de que deseas guardar los cambios en este torneo?
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="confirmarGuardarEditarTorneo{{ torneo.id }}">Sí, guardar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                  var btnConfirmar = document.getElementById('confirmarGuardarEditarTorneo{{ torneo.id }}');
+                  var form = document.getElementById('form-editar-torneo-{{ torneo.id }}');
+                  if (btnConfirmar && form) {
+                    btnConfirmar.addEventListener('click', function() {
+                      form.submit();
+                    });
+                  }
+                });
+                </script>
+                <!-- Modal para agregar equipos al torneo -->
+                <div class="modal fade" id="modalAgregarEquipos{{ torneo.id }}" tabindex="-1" aria-labelledby="modalAgregarEquiposLabel{{ torneo.id }}" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="modalAgregarEquiposLabel{{ torneo.id }}" style="color: black">Agregar equipos a {{ torneo.nombre }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                      </div>
+                      <form method="post" action="{% url 'agregar_equipos_a_torneo' torneo.id %}" id="form-agregar-equipos-{{ torneo.id }}">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                          <p style="color: black">Selecciona uno o varios equipos para añadir al torneo.</p>
+                          <div class="mb-3">
+                            <select name="equipos" id="select-equipos-{{ torneo.id }}" class="form-select" multiple size="10">
+                              {% for equipo in equipos %}
+                                <option value="{{ equipo.id }}">{{ equipo.nombre }}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                          <!-- use a real form submit button so the browser sends the selected <option> values directly -->
+                          <button type="submit" class="btn btn-primary" id="btn-submit-agregar-equipos-{{ torneo.id }}">Agregar seleccionados</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                  // Mover modal al body para evitar problemas de z-index/overlay cuando está dentro de otros contenedores
+                  var modalEl = document.getElementById('modalAgregarEquipos{{ torneo.id }}');
+                  if (modalEl && modalEl.parentNode !== document.body) {
+                    document.body.appendChild(modalEl);
+                  }
+
+                  var formAgregar = document.getElementById('form-agregar-equipos-{{ torneo.id }}');
+                  var selectEquipos = document.getElementById('select-equipos-{{ torneo.id }}');
+                  var btnSubmit = document.getElementById('btn-submit-agregar-equipos-{{ torneo.id }}');
+                  if (formAgregar) {
+                    formAgregar.addEventListener('submit', function(e) {
+                      // Validación cliente: al menos una opción seleccionada
+                      var selectedCount = 0;
+                      if (selectEquipos && selectEquipos.options) {
+                        for (var i=0;i<selectEquipos.options.length;i++) {
+                          if (selectEquipos.options[i].selected) selectedCount++;
+                        }
+                      }
+                      if (selectedCount === 0) {
+                        e.preventDefault();
+                        // Mostrar mensaje sencillo
+                        alert('Selecciona al menos un equipo antes de enviar.');
+                        return false;
+                      }
+                      // Deshabilitar botón para evitar envíos dobles
+                      if (btnSubmit) {
+                        btnSubmit.disabled = true;
+                      }
+                      return true;
+                    });
+                  }
+                });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

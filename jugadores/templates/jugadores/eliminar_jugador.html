@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h4>Confirmar eliminación de jugador</h4>
+        </div>
+        <div class="card-body">
+            <p class="lead">¿Estás seguro que deseas eliminar al jugador <strong>{{ jugador.nombre }} {{ jugador.apellido }}</strong>?</p>
+            <p class="text-danger">Esta acción no se puede deshacer y se perderán todos los datos relacionados con este jugador.</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Sí, eliminar jugador</button>
+                <a href="{% url 'lista_jugadores' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

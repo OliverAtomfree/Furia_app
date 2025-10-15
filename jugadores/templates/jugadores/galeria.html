@@ -1,0 +1,23 @@
+{% extends 'jugadores/base.html' %}
+
+{% block titulo %}Galería{% endblock %}
+
+{% block contenido %}
+    <h1 class="text-center mb-5 text-white">Galería de Fotos</h1>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for foto in fotos %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0">
+                    <img src="{{ foto.imagen.url }}" class="card-img-top rounded-top" alt="{{ foto.descripcion }}" style="height: auto; object-fit: cover;">
+                    <div class="card-body">
+                        <p class="card-text text-muted">{{ foto.descripcion }}</p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <p class="text-center text-white-50">No hay fotos en la galería.</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

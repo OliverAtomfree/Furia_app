@@ -1,0 +1,105 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Detalle del Partido{% endblock %}
+{% block contenido %}
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4 p-4" style="background: linear-gradient(90deg, #4A148C 60%, #7B1FA2 100%);">
+        <h2 class="text-center mb-4 text-light fw-bold">{{ partido.equipo_local.nombre }} <span class="text-warning">{{ partido.marcador_local }}</span> vs <span class="text-warning">{{ partido.marcador_visitante }}</span> {{ partido.equipo_visitante.nombre }}</h2>
+        <div class="row mb-4">
+            <div class="col-md-6 text-center">
+                <h4 class="text-light">{{ partido.equipo_local.nombre }}</h4>
+                <span class="display-4 text-warning fw-bold">{{ partido.marcador_local }}</span>
+            </div>
+            <div class="col-md-6 text-center">
+                <h4 class="text-light">{{ partido.equipo_visitante.nombre }}</h4>
+                <span class="display-4 text-warning fw-bold">{{ partido.marcador_visitante }}</span>
+            </div>
+        </div>
+        <h5 class="mb-3 text-light">Estadísticas del Partido</h5>
+        <table class="table table-bordered table-striped table-hover rounded-3 overflow-hidden" style="background: rgba(255,255,255,0.1);">
+            <thead class="table-dark">
+                <tr>
+                    <th>Jugador</th>
+                    <th>⚽ Goles</th>
+                    <th>🅰️ Asistencias</th>
+                    <th>🟨 Amarillas</th>
+                    <th>🟥 Rojas</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estadistica in estadisticas %}
+                {% with t=tarjetas_por_jugador|get_item:estadistica.jugador.id %}
+                <tr>
+                    <td class="text-light">{{ estadistica.jugador.nombre }} {{ estadistica.jugador.apellido }}</td>
+                    <td class="text-warning fw-bold">{{ estadistica.goles }}</td>
+                    <td class="text-info fw-bold">{{ estadistica.asistencias }}</td>
+                    <td class="text-warning">{{ t.amarillas|default:0 }}</td>
+                    <td class="text-danger">{{ t.rojas|default:0 }}</td>
+                </tr>
+                {% endwith %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <h5 class="mt-4 text-light">Detalles de Tarjetas</h5>
+        <div class="row">
+            {% for estadistica in estadisticas %}
+                {% with t=tarjetas_por_jugador|get_item:estadistica.jugador.id %}
+                <div class="col-md-6">
+                    <div class="card mb-3" style="background: rgba(0,0,0,0.15);">
+                        <div class="card-body">
+                            <h6 class="card-title text-light">{{ estadistica.jugador.nombre }} {{ estadistica.jugador.apellido }}</h6>
+                            <p class="mb-1 text-warning">Amarillas: {{ t.amarillas|default:0 }}</p>
+                            <p class="mb-1 text-danger">Rojas: {{ t.rojas|default:0 }}</p>
+                            {% if t.tarjetas %}
+                                <ul class="list-unstyled text-light small">
+                                    {% for tar in t.tarjetas %}
+                                        <li>- {{ tar.get_tipo_display }}{% if tar.minuto %} ({{ tar.minuto }}'){% endif %} - {{ tar.fecha }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+        <h5 class="mt-4 text-light">Votar al Jugador del Partido</h5>
+        {% if mensaje %}
+            <div class="alert alert-success text-center">{{ mensaje }}</div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="jugador" class="form-label text-light">Selecciona al Jugador:</label>
+                <select class="form-select" id="jugador" name="jugador">
+                    {% for jugador in jugadores %}
+                    <option value="{{ jugador.id }}">{{ jugador.nombre }} {{ jugador.apellido }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-warning fw-bold">Votar</button>
+        </form>
+        {% if request.user.is_staff and tarjeta_form %}
+            <hr class="my-4" />
+            <h5 class="mt-4 text-light">Registrar Tarjeta (Staff)</h5>
+            <form method="post" class="mb-3">
+                {% csrf_token %}
+                {% for field in tarjeta_form %}
+                    <div class="mb-2">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-danger small">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" name="submit_tarjeta" class="btn btn-danger">Guardar Tarjeta</button>
+            </form>
+        {% endif %}
+        {% if jugador_destacado %}
+            <div class="mt-4 alert alert-info text-center">
+                <strong>Jugador del Partido:</strong> <span class="fw-bold text-warning">{{ jugador_destacado.nombre }} {{ jugador_destacado.apellido }}</span>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

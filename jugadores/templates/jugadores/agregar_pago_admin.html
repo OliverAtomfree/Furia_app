@@ -1,0 +1,17 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Agregar Pago (Admin){% endblock %}
+{% block contenido %}
+<div class="container py-4">
+  <h3>Crear pago manual (Staff)</h3>
+  <div class="card">
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary" type="submit">Crear pago</button>
+        <a href="{% url 'dashboard_staff' %}" class="btn btn-secondary">Cancelar</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

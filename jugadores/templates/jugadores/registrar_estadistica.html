@@ -1,0 +1,40 @@
+{% extends 'jugadores/base.html' %}
+
+{% block titulo %}Registrar Estadística{% endblock %}
+
+{% block contenido %}
+    <h1>Registrar una nueva Estadística</h1>
+    <div class="card my-4">
+        <div class="card-body">
+      <form method="post" class="needs-validation" novalidate id="form-estadistica">
+                {% csrf_token %}
+                {{ form.as_p }}
+        <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#confirmModalEstadistica">Guardar Estadística</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
+  <div class="modal fade" id="confirmModalEstadistica" tabindex="-1" aria-labelledby="confirmModalLabelEstadistica" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmModalLabelEstadistica">Confirmar registro</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            ¿Estás seguro de que deseas guardar esta estadística?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="confirmarGuardarEstadistica">Sí, guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.getElementById('confirmarGuardarEstadistica').addEventListener('click', function() {
+        document.getElementById('form-estadistica').submit();
+      });
+    </script>
+{% endblock %}

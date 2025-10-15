@@ -1,0 +1,466 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Dashboard Staff{% endblock %}
+{% block contenido %}
+<div class="container py-5">
+  <h2 class="mb-4 text-center"><i class="bi bi-speedometer2"></i> Panel Staff & Admin</h2>
+  <div class="row mb-4 justify-content-center">
+    <div class="col-md-2">
+      <div class="card bg-dark text-white shadow-lg text-center">
+        <div class="card-body">
+          <h6 class="card-title">Jugadores</h6>
+          <div class="display-5 fw-bold">{{ total_jugadores }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card bg-dark text-white shadow-lg text-center">
+        <div class="card-body">
+          <h6 class="card-title">Equipos</h6>
+          <div class="display-5 fw-bold">{{ total_equipos }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card bg-dark text-white shadow-lg text-center">
+        <div class="card-body">
+          <h6 class="card-title">Torneos</h6>
+          <div class="display-5 fw-bold">{{ total_torneos }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card bg-dark text-white shadow-lg text-center">
+        <div class="card-body">
+          <h6 class="card-title">Partidos</h6>
+          <div class="display-5 fw-bold">{{ total_partidos }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row g-4 justify-content-center">
+    <div class="col-md-4">
+      <div class="card shadow-lg text-center">
+        <div class="card-body">
+          <h5 class="card-title">Gestión de Jugadores</h5>
+          <a href="{% url 'lista_jugadores' %}" class="btn btn-primary w-100 mb-2">Ver Jugadores</a>
+          <a href="{% url 'agregar_jugador' %}" class="btn btn-outline-light w-100">Agregar Jugador</a>
+        </div>
+      </div>
+    </div>
+  <div class="row mt-5 justify-content-center">
+    <div class="col-10">
+      <div class="card shadow-lg">
+        <div class="card-body">
+          <h5 class="card-title">Gestión de Pagos</h5>
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <div class="p-3 bg-light rounded text-center">
+                <strong style="color: black">Total Pagos</strong>
+                <div class="display-6" style="color: black">{{ total_pagos }}</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 bg-warning rounded text-center">
+                <strong style="color: black">Pagos Pendientes</strong>
+                <div class="display-6" style="color: black">{{ pagos_pendientes }}</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 bg-success rounded text-center text-white">
+                <strong style="color: black">Pagos Aprobados</strong>
+                <div class="display-6" style="color: black">{{ pagos_aprobados }}</div>
+              </div>
+            </div>
+          </div>
+          <h6 style="color: black; text-align: center">Últimos pagos</h6>
+          <div class="mb-3 d-flex justify-content-center gap-2">
+            <a class="btn btn-sm btn-outline-primary" style="font-weight: bold; background: papayawhip;" data-bs-toggle="collapse" href="#collapsePagoAdmin" role="button" aria-expanded="false" aria-controls="collapsePagoAdmin">Crear pago manual</a>
+            <a href="{% url 'agregar_pago_admin' %}" style="font-weight: bold; background: darkblue;" class="btn btn-sm btn-outline-secondary">Formulario completo</a>
+          </div>
+          <div class="collapse" id="collapsePagoAdmin">
+            <div class="card card-body mb-3">
+              {% if pago_admin_form %}
+                <form method="post" action="{% url 'agregar_pago_admin' %}" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {{ pago_admin_form.non_field_errors }}
+                  <div class="row g-2">
+                    <div class="col-md-4">
+                      {{ pago_admin_form.jugador.label_tag }}
+                      {{ pago_admin_form.jugador }}
+                      {{ pago_admin_form.jugador.errors }}
+                    </div>
+                    <div class="col-md-2">
+                      {{ pago_admin_form.tipo.label_tag }}
+                      {{ pago_admin_form.tipo }}
+                      {{ pago_admin_form.tipo.errors }}
+                    </div>
+                    <div class="col-md-2">
+                      {{ pago_admin_form.monto.label_tag }}
+                      {{ pago_admin_form.monto }}
+                      {{ pago_admin_form.monto.errors }}
+                    </div>
+                    <div class="col-md-4">
+                      {{ pago_admin_form.metodo.label_tag }}
+                      {{ pago_admin_form.metodo }}
+                      {{ pago_admin_form.metodo.errors }}
+                    </div>
+                  </div>
+                  <div class="row g-2 mt-2">
+                    <div class="col-md-6">
+                      {{ pago_admin_form.referencia.label_tag }}
+                      {{ pago_admin_form.referencia }}
+                      {{ pago_admin_form.referencia.errors }}
+                      <div class="form-text mt-1 d-none" id="referencia-info" role="status" aria-live="polite">
+                        <i class="bi bi-info-circle-fill text-info" aria-hidden="true"></i>
+                        <span class="small"> Solo <strong>Pago Móvil</strong> y <strong>Transferencia</strong> requieren referencia.</span>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      {{ pago_admin_form.moneda.label_tag }}
+                      {{ pago_admin_form.moneda }}
+                      {{ pago_admin_form.moneda.errors }}
+                    </div>
+                    <div class="col-md-3">
+                      {{ pago_admin_form.comprobante.label_tag }}
+                      {{ pago_admin_form.comprobante }}
+                      {{ pago_admin_form.comprobante.errors }}
+                      <div class="mt-2 d-none" id="comprobante-warning" role="status" aria-live="polite">
+                        <div class="alert alert-warning py-1 px-2 mb-0 d-flex align-items-center" style="gap:.5rem;">
+                          <i class="bi bi-exclamation-triangle-fill text-warning" aria-hidden="true"></i>
+                          <div class="small mb-0 text-dark">Solo <strong>Pago Móvil</strong> y <strong>Transferencia</strong> requieren comprobante.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <input type="hidden" name="next" value="dashboard">
+                  <div class="mt-3">
+                    <button class="btn btn-primary btn-sm" type="submit">Crear pago</button>
+                  </div>
+                </form>
+              {% else %}
+                <form method="post" action="{% url 'agregar_pago_admin' %}" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {# fallback: formulario simple si no hay form en el contexto #}
+                  <div class="row g-2">
+                    <div class="col-md-4">
+                      <label class="form-label">Jugador</label>
+                      <select name="jugador" class="form-select">
+                        {% for j in jugadores_dashboard %}
+                          <option value="{{ j.id }}">{{ j.nombre }} {{ j.apellido }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Tipo</label>
+                      <select name="tipo" class="form-select">
+                        <option value="inscripcion">Inscripción</option>
+                        <option value="arbitraje">Arbitraje</option>
+                        <option value="tarjetas_amarilla">Tarjeta Amarilla</option>
+                        <option value="tarjetas_roja">Tarjeta Roja</option>
+                        <option value="otro">Otro</option>
+                      </select>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Monto</label>
+                      <input name="monto" type="number" step="0.01" class="form-control" required>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Método</label>
+                        <select name="metodo" class="form-select">
+                        <option value="pago_movil">Pago Móvil</option>
+                        <option value="transferencia">Transferencia</option>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="otro">Otro</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row g-2 mt-2">
+                    <div class="col-md-6">
+                      <label class="form-label">Referencia</label>
+                      <input name="referencia" class="form-control" maxlength="6" pattern="\d{0,6}" inputmode="numeric">
+                      <div class="form-text mt-1 d-none" id="referencia-info-fallback" role="status" aria-live="polite">
+                        <i class="bi bi-info-circle-fill text-info" aria-hidden="true"></i>
+                        <span class="small"> Solo <strong>Pago Móvil</strong> y <strong>Transferencia</strong> requieren referencia.</span>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <label class="form-label">Moneda</label>
+                      <select name="moneda" class="form-select">
+                        <option value="VES">VES</option>
+                        <option value="USD">USD</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <label class="form-label">Comprobante</label>
+                      <input name="comprobante" type="file" class="form-control">
+                      <div class="mt-2 d-none" id="comprobante-warning-fallback" role="status" aria-live="polite">
+                        <div class="alert alert-warning py-1 px-2 mb-0 d-flex align-items-center" style="gap:.5rem;">
+                          <i class="bi bi-exclamation-triangle-fill text-warning" aria-hidden="true"></i>
+                          <div class="small mb-0 text-dark">Solo <strong>Pago Móvil</strong> y <strong>Transferencia</strong> requieren comprobante.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <input type="hidden" name="next" value="dashboard">
+                  <div class="mt-3">
+                    <button class="btn btn-primary btn-sm" type="submit">Crear pago</button>
+                  </div>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row gy-3">
+            {% for pago in ultimos_pagos %}
+            {% if not pago.archivado %}
+            <div class="col-12">
+              <div class="d-flex align-items-center p-2 border rounded">
+                <div class="me-3" style="width:64px;height:64px;flex:0 0 64px;">
+                  {% if pago.comprobante %}
+                    <a href="{% url 'pago_detalle' pago.id %}"><img src="{{ pago.comprobante.url }}" alt="comprobante" class="img-fluid rounded" style="width:64px;height:64px;object-fit:cover;"></a>
+                  {% else %}
+                    <div class="bg-light border rounded w-100 h-100 d-flex align-items-center justify-content-center text-muted">No img</div>
+                  {% endif %}
+                </div>
+                <div class="flex-grow-1">
+                  <div class="fw-bold">#{{ pago.id }} - {{ pago.jugador }}</div>
+                  <div class="small text-muted">{{ pago.get_tipo_display }} · {{ pago.fecha|date:'SHORT_DATETIME_FORMAT' }}</div>
+                </div>
+                <div class="text-end ms-3 me-3">
+                  <div class="fw-bold">{{ pago.monto|floatformat:2 }}</div>
+                  <div class="small">{% if pago.referencia %}{{ pago.referencia|slice:'-4:' }}{% else %}&mdash;{% endif %}</div>
+                </div>
+                <div class="text-end">
+                  {% if pago.estado == 'pendiente' %}
+                    <span class="badge bg-warning text-dark">Pendiente</span>
+                  {% elif pago.estado == 'aprobado' %}
+                    <span class="badge bg-success">Aprobado</span>
+                  {% elif pago.estado == 'rechazado' %}
+                    <span class="badge bg-danger">Rechazado</span>
+                  {% else %}
+                    <span class="badge bg-secondary">{{ pago.get_estado_display }}</span>
+                  {% endif %}
+                  <div class="mt-2">
+                    {% if pago.estado == 'pendiente' %}
+                      <form method="post" action="{% url 'aprobar_pago' pago.id %}" style="display:inline-block;">
+                        {% csrf_token %}
+                        <input type="hidden" name="accion" value="aprobar">
+                        <input type="hidden" name="next" value="{% url 'dashboard_staff' %}">
+                        <button type="submit" class="btn btn-sm btn-success">Aprobar</button>
+                      </form>
+                      <div style="display:inline-block;margin-left:6px;">
+                        <button class="btn btn-sm btn-danger" type="button" data-bs-toggle="collapse" data-bs-target="#rechazarInline{{ pago.id }}">Rechazar</button>
+                        <div class="collapse mt-2" id="rechazarInline{{ pago.id }}">
+                          <form method="post" action="{% url 'aprobar_pago' pago.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="accion" value="rechazar">
+                            <input type="hidden" name="next" value="{% url 'dashboard_staff' %}">
+                            <div class="input-group input-group-sm">
+                              <input name="motivo" class="form-control" placeholder="Motivo (opcional)">
+                              <button class="btn btn-danger" type="submit">Confirmar</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    {% else %}
+                      <a href="{% url 'pago_detalle' pago.id %}" class="btn btn-sm btn-outline-primary">Ver</a>
+                    {% endif %}
+                    {# Archive button (soft delete) #}
+                    <form method="post" action="{% url 'archivar_pago' pago.id %}" style="display:inline-block;margin-left:6px;">
+                      {% csrf_token %}
+                      <input type="hidden" name="accion" value="archivar">
+                      <input type="hidden" name="next" value="{% url 'dashboard_staff' %}">
+                      <button type="submit" class="btn btn-sm btn-secondary">Archivar</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            {% empty %}
+            <div class="col-12"><div style="color: black">No hay pagos recientes.</div></div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="col-md-4">
+      <div class="card shadow-lg text-center">
+        <div class="card-body">
+          <h5 class="card-title">Gestión de Equipos</h5>
+          <a href="{% url 'lista_equipos' %}" class="btn btn-primary w-100 mb-2">Ver Equipos</a>
+          <a href="{% url 'agregar_equipo' %}" class="btn btn-outline-light w-100">Agregar Equipo</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-lg text-center">
+        <div class="card-body">
+          <h5 class="card-title">Gestión de Torneos</h5>
+          <a href="{% url 'lista_torneos' %}" class="btn btn-primary w-100 mb-2">Ver Torneos</a>
+          <a href="{% url 'agregar_torneo' %}" class="btn btn-outline-light w-100">Agregar Torneo</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-lg text-center">
+        <div class="card-body">
+          <h5 class="card-title">Gestión de Partidos</h5>
+          <a href="{% url 'resultados_partidos' %}" class="btn btn-primary w-100 mb-2">Ver Partidos</a>
+          <a href="{% url 'agregar_partido' %}" class="btn btn-outline-light w-100">Agregar Partido</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-lg text-center">
+        <div class="card-body">
+          <h5 class="card-title">Panel Admin Django</h5>
+          <a href="{% url 'admin:index' %}" target="_blank" class="btn btn-danger w-100">Ir al Panel Admin</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+  (function(){
+    // Reglas: si metodo == 'efectivo' o moneda == 'USD' => comprobante requerido; referencia opcional
+    function updateFields(root){
+      if(!root) return;
+      var metodo = root.querySelector('[name="metodo"]');
+      var moneda = root.querySelector('[name="moneda"]');
+      var comprobante = root.querySelector('[name="comprobante"]');
+      var referencia = root.querySelector('[name="referencia"]');
+  // localizar contenedores de advertencia (para form y fallback)
+  var warning = root.querySelector('#comprobante-warning') || document.getElementById('comprobante-warning');
+  var warningFallback = root.querySelector('#comprobante-warning-fallback') || document.getElementById('comprobante-warning-fallback');
+  var referenciaInfo = root.querySelector('#referencia-info') || document.getElementById('referencia-info');
+  var referenciaInfoFallback = root.querySelector('#referencia-info-fallback') || document.getElementById('referencia-info-fallback');
+      function apply(){
+        var m = metodo ? metodo.value : null;
+        var mon = moneda ? moneda.value : null;
+        if(comprobante){
+          if(m === 'pago_movil' || m === 'transferencia'){
+            comprobante.required = true;
+            comprobante.setAttribute('aria-required','true');
+            if(comprobante.closest('.col-md-3')) comprobante.closest('.col-md-3').style.display = '';
+            if(warning) { warning.classList.remove('d-none'); warning.setAttribute('aria-hidden','false'); }
+            if(warningFallback) { warningFallback.classList.remove('d-none'); warningFallback.setAttribute('aria-hidden','false'); }
+          } else {
+            comprobante.required = false;
+            comprobante.removeAttribute('aria-required');
+            if(warning) { warning.classList.add('d-none'); warning.setAttribute('aria-hidden','true'); }
+            if(warningFallback) { warningFallback.classList.add('d-none'); warningFallback.setAttribute('aria-hidden','true'); }
+          }
+        }
+        if(moneda){
+          // forzar VES y deshabilitar USD en pago_movil/transferencia
+          if(m === 'pago_movil' || m === 'transferencia'){
+            // forzar valor VES y prevenir USD
+            moneda.value = 'VES';
+            moneda.querySelectorAll('option').forEach(function(opt){ opt.disabled = (opt.value === 'USD'); });
+            moneda.setAttribute('aria-disabled', 'true');
+          } else {
+            moneda.querySelectorAll('option').forEach(function(opt){ opt.disabled = false; });
+            moneda.removeAttribute('aria-disabled');
+          }
+        }
+
+        if(referencia){
+          // Si el método es efectivo, la referencia no se necesita en ningún caso
+          // referencia requerida solo para pago_movil y transferencia
+          if(m === 'pago_movil' || m === 'transferencia'){
+            referencia.disabled = false;
+            referencia.required = true;
+            referencia.removeAttribute('aria-hidden');
+            var colRef = referencia.closest('.col-md-6');
+            if(colRef){ colRef.style.opacity = ''; colRef.style.display = ''; }
+            if(referenciaInfo) { referenciaInfo.classList.add('d-none'); referenciaInfo.setAttribute('aria-hidden','true'); }
+            if(referenciaInfoFallback) { referenciaInfoFallback.classList.add('d-none'); referenciaInfoFallback.setAttribute('aria-hidden','true'); }
+          } else {
+            // otros métodos: referencia no es obligatoria
+            referencia.required = false;
+            referencia.disabled = false;
+            referencia.removeAttribute('aria-hidden');
+            if(referenciaInfo) { referenciaInfo.classList.remove('d-none'); referenciaInfo.setAttribute('aria-hidden','false'); }
+            if(referenciaInfoFallback) { referenciaInfoFallback.classList.remove('d-none'); referenciaInfoFallback.setAttribute('aria-hidden','false'); }
+          }
+          // Añadir contador de dígitos y mostrar error inline
+          var refHelpId = referencia.id + '_help';
+          var refErrId = referencia.id + '_err';
+          var existingHelp = document.getElementById(refHelpId);
+          if(!existingHelp){
+            var help = document.createElement('div');
+            help.id = refHelpId;
+            help.className = 'form-text small text-muted';
+            referencia.parentNode.appendChild(help);
+          }
+          var existingErr = document.getElementById(refErrId);
+          if(!existingErr){
+            var err = document.createElement('div');
+            err.id = refErrId;
+            err.className = 'invalid-feedback d-none';
+            referencia.parentNode.appendChild(err);
+          }
+        }
+      }
+      if(metodo) metodo.addEventListener('change', apply);
+      if(moneda) moneda.addEventListener('change', apply);
+      apply();
+    }
+    // Aplicar a todos los forms del dashboard (fallback y form full)
+      document.querySelectorAll('#collapsePagoAdmin form, .card.card-body form').forEach(function(f){
+        updateFields(f);
+      });
+
+      // Limitar inputs de referencia a sólo dígitos y máximo 6 caracteres en tiempo real
+      function sanitizeReferenciaInput(ev){
+        var el = ev.target;
+        if(!el || el.name !== 'referencia') return;
+        // eliminar no dígitos y limitar a 6
+        var cleaned = el.value.replace(/\D/g, '').slice(0,6);
+        if(cleaned !== el.value){
+          el.value = cleaned;
+        }
+        // actualizar contador
+        var help = document.getElementById(el.id + '_help');
+        if(help) help.textContent = (el.value.length || 0) + ' / 6 dígitos';
+        // validar visualmente
+        var err = document.getElementById(el.id + '_err');
+        if(err){
+          if((el.required || el.getAttribute('aria-required')) && el.value.length === 0){
+            err.textContent = 'Se requiere referencia para este método.';
+            err.classList.remove('d-none');
+            el.classList.add('is-invalid');
+          } else if(el.value.length > 0 && el.value.length < 4){
+            err.textContent = 'La referencia debe tener al menos 4 dígitos.';
+            err.classList.remove('d-none');
+            el.classList.add('is-invalid');
+          } else {
+            err.classList.add('d-none');
+            el.classList.remove('is-invalid');
+          }
+        }
+      }
+      document.querySelectorAll('input[name="referencia"]').forEach(function(inp){
+        // dar id único si no tiene
+        if(!inp.id) inp.id = 'id_referencia_' + Math.random().toString(36).slice(2,8);
+        inp.addEventListener('input', sanitizeReferenciaInput);
+        // aplicar inicialmente para valores ya presentes
+        inp.value = (inp.value || '').replace(/\D/g, '').slice(0,6);
+        // inicializar contador si aplica
+        var help = document.getElementById(inp.id + '_help');
+        if(help) help.textContent = (inp.value.length || 0) + ' / 6 dígitos';
+      });
+
+      // Validación cliente antes de submit: bloquear si hay errores visibles
+      document.querySelectorAll('#collapsePagoAdmin form, .card.card-body form').forEach(function(f){
+        f.addEventListener('submit', function(ev){
+          var invalid = f.querySelectorAll('.is-invalid');
+          if(invalid.length > 0){ ev.preventDefault(); invalid[0].focus(); }
+        });
+      });
+  })();
+</script>
+{% endblock %}

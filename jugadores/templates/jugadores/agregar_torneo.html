@@ -1,0 +1,117 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Agregar Torneo{% endblock %}
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="text-center mb-4">
+          <i class="bi bi-award-fill" style="font-size:2.5rem;color:#FFD600;"></i>
+          <h1 class="fw-bold" style="color:#FFD600;">Agregar Torneo</h1>
+        </div>
+        <div class="card p-4 shadow-lg border-0" style="background: linear-gradient(135deg, #260D4D 60%, #7B1FA2 100%); color: #FFD600; border-radius:2rem;">
+            <div class="card-body">
+                {% if messages %}
+                  {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert" id="msg-exito">
+                      {{ message }}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                  {% endfor %}
+                  <script>
+                  document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(function() {
+                      var form = document.querySelector('form');
+                      if (form) form.reset();
+                    }, 500);
+                  });
+                  </script>
+                {% endif %}
+        <form method="post" id="form-agregar-torneo">
+          {% csrf_token %}
+          <div class="row g-3">
+            {% for field in form %}
+            <div class="col-12">
+              <label for="{{ field.id_for_label }}" class="form-label text-light fw-bold">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+                <div class="text-danger small">{{ field.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          <div class="d-grid gap-2 mt-4">
+            <button type="button" class="btn w-100 fw-bold py-2" style="background: linear-gradient(90deg, #FFD600 60%, #7B1FA2 100%); color: #260D4D; border-radius: 1rem; box-shadow: 0 2px 8px #260D4D;" data-bs-toggle="modal" data-bs-target="#confirmModalAgregarTorneoUnique"><i class="bi bi-award-fill"></i> Guardar Torneo</button>
+          </div>
+        </form>
+        </div>
+        </div>
+        </div>
+      
+                <!-- Modal de confirmación -->
+                <div class="modal fade" id="confirmModalAgregarTorneoUnique" tabindex="-1" aria-labelledby="confirmModalLabelAgregarTorneoUnique" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabelAgregarTorneoUnique" style="color: black">Confirmar registro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body" style="color: black">
+                    ¿Estás seguro de que deseas guardar este torneo?
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cancelar</button>
+                    <button type="button" class="btn btn-light" id="confirmarGuardarAgregarTorneo">Sí, guardar</button>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                  // Eliminar posibles duplicados del modal si existen
+                  var modals = Array.from(document.querySelectorAll('#confirmModalAgregarTorneoUnique'));
+                  if (modals.length > 1) {
+                  modals.slice(1).forEach(function(m) { m.remove(); });
+                  }
+
+                  var confirmModal = document.querySelector('#confirmModalAgregarTorneoUnique');
+                  // Asegurar que el modal esté en body para evitar comportamientos raros de Bootstrap
+                  if (confirmModal && confirmModal.parentNode !== document.body) {
+                  document.body.appendChild(confirmModal);
+                  }
+
+                  var btnConfirmar = document.getElementById('confirmarGuardarAgregarTorneo');
+                  var form = document.getElementById('form-agregar-torneo');
+
+                  if (btnConfirmar && form && confirmModal) {
+                  // Evitar múltiples listeners
+                  if (!btnConfirmar.dataset.listenerAttached) {
+                    btnConfirmar.dataset.listenerAttached = '1';
+                    btnConfirmar.addEventListener('click', function() {
+                    // Desactivar botón para evitar doble envío
+                    btnConfirmar.disabled = true;
+                    btnConfirmar.classList.add('disabled');
+
+                    // Obtener o crear instancia del modal (compatibilidad con distintas versiones de Bootstrap)
+                    var modalInstance = null;
+                    if (typeof bootstrap !== 'undefined') {
+                      if (bootstrap.Modal && bootstrap.Modal.getInstance) {
+                      modalInstance = bootstrap.Modal.getInstance(confirmModal);
+                      }
+                      if (!modalInstance && bootstrap.Modal && (bootstrap.Modal.getOrCreateInstance || bootstrap.Modal)) {
+                      try {
+                        modalInstance = (bootstrap.Modal.getOrCreateInstance) ? bootstrap.Modal.getOrCreateInstance(confirmModal) : new bootstrap.Modal(confirmModal);
+                      } catch (e) { /* ignore */ }
+                      }
+                    }
+
+                    if (modalInstance) modalInstance.hide();
+                    // Pequeño retraso para asegurar que la animación de ocultar termine
+                    setTimeout(function() { form.submit(); }, 200);
+                    });
+                  }
+                  }
+                });
+                </script>
+        </div>
+    </div>
+</div>
+{% endblock %}

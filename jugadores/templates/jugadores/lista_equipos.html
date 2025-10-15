@@ -1,0 +1,32 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Lista de Equipos{% endblock %}
+{% block contenido %}
+<div class="container py-4">
+  <h2 class="mb-4 text-center">Equipos Registrados</h2>
+  <form method="get" class="row mb-3 g-2 align-items-end">
+    <div class="col-md-6 mx-auto">
+      <input type="text" class="form-control" name="busqueda" value="{{ busqueda|default:'' }}" placeholder="Buscar equipo por nombre...">
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+  </form>
+  <div class="row g-4 justify-content-center">
+    {% for equipo in equipos %}
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card p-3 h-100 text-center shadow-lg">
+          {% if equipo.logo %}
+            <img src="{{ equipo.logo.url }}" class="rounded-circle mx-auto mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 2px 8px #260D4D;" alt="Logo del equipo">
+          {% else %}
+            <div class="rounded-circle mx-auto mb-2 bg-secondary d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; color: #fff; font-size: 2rem;"> <i class="bi bi-shield-fill"></i> </div>
+          {% endif %}
+          <h5 class="card-title mt-2">{{ equipo.nombre }}</h5>
+          <p class="card-text mb-1"><span class="fw-bold">Torneos:</span> {% for torneo in equipo.torneos.all %}{{ torneo.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}-{% endfor %}</p>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center">No hay equipos registrados.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

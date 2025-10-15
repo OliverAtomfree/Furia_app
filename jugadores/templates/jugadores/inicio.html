@@ -1,0 +1,94 @@
+{% extends 'jugadores/base.html' %}
+
+{% block titulo %}Lista de Jugadores{% endblock %}
+
+{% block contenido %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
+          {{ message|safe }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+    <div class="container mb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0 rounded-4 p-4 text-center" style="background: linear-gradient(90deg, #4A148C 60%, #7B1FA2 100%);">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-center gap-4">
+                        <img src="/media/equipos/logos/Furia.png" alt="Escudo Furia Nocturna" class="img-fluid" style="width: 120px; height: 120px; object-fit: contain;">
+                        <div>
+                            <h1 class="fw-bold display-5 text-light mb-2">Furia Nocturna FC</h1>
+                            <h3 class="fw-bold text-warning mb-0" style="letter-spacing: 2px;">Unidos como la noche, fuertes como la Furia</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-lg-4">
+            <div class="card shadow-lg border-0 p-4 text-center" style="background: linear-gradient(90deg, #7B1FA2 60%, #4A148C 100%); color: #fff;">
+                <h4 class="mb-3"><i class="bi bi-trophy-fill text-warning"></i> Torneos</h4>
+                <ul class="list-group list-group-flush">
+                    {% for torneo in torneos|slice:':3' %}
+                        <li class="list-group-item bg-transparent text-light">{{ torneo.nombre }} </li>
+                    {% empty %}
+                        <li class="list-group-item bg-transparent text-light">Sin torneos registrados</li>
+                    {% endfor %}
+                </ul>
+                <a href="{% url 'lista_torneos' %}" class="btn btn-outline-light mt-3">Ver todos</a>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="card shadow-lg border-0 p-4 text-center" style="background: linear-gradient(90deg, #4A148C 60%, #7B1FA2 100%); color: #fff;">
+                <h4 class="mb-3"><i class="bi bi-shield-fill text-info"></i> Equipos</h4>
+                <ul class="list-group list-group-flush">
+                    {% for equipo in equipos|slice:':3' %}
+                        <li class="list-group-item bg-transparent text-light">{{ equipo.nombre }}</li>
+                    {% empty %}
+                        <li class="list-group-item bg-transparent text-light">Sin equipos registrados</li>
+                    {% endfor %}
+                </ul>
+                <a href="{% url 'lista_equipos' %}" class="btn btn-outline-light mt-3">Ver todos</a>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="card shadow-lg border-0 p-4 text-center" style="background: linear-gradient(90deg, #7B1FA2 60%, #4A148C 100%); color: #fff;">
+                <h4 class="mb-3"><i class="bi bi-calendar-event-fill text-success"></i> Últimos Partidos</h4>
+                <ul class="list-group list-group-flush">
+                    {% for partido in partidos|slice:':3' %}
+                        <li class="list-group-item bg-transparent text-light">{{ partido.equipo_local }} vs {{ partido.equipo_visitante }} <span class="text-muted">({{ partido.fecha }})</span></li>
+                    {% empty %}
+                        <li class="list-group-item bg-transparent text-light">Sin partidos registrados</li>
+                    {% endfor %}
+                </ul>
+                <a href="{% url 'resultados_partidos' %}" class="btn btn-outline-light mt-3">Ver todos</a>
+            </div>
+        </div>
+    </div>
+    <h2 class="text-center mb-4">Conoce a nuestros jugadores</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for jugador in jugadores %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+                <a href="{% url 'perfil_jugador' jugador.id %}" class="text-decoration-none text-dark">
+                    <div class="d-flex justify-content-center p-3">
+                        {% if jugador.foto_de_perfil %}
+                            <img src="{{ jugador.foto_de_perfil.url }}" alt="Foto de perfil de {{ jugador.nombre }}" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid var(--bs-warning);">
+                        {% else %}
+                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
+                                <span class="text-white fs-1">?</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title mb-0">{{ jugador.nombre }} {{ jugador.apellido }}</h5>
+                        <p class="card-text text-muted">{{ jugador.posicion }}</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

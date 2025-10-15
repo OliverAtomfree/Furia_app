@@ -1,0 +1,23 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Credenciales del Jugador{% endblock %}
+{% block contenido %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-lg border-0 p-4 text-center">
+                <h2 class="mb-4 text-success">¡Jugador creado exitosamente!</h2>
+                <p class="mb-3">Guarda estos datos y compártelos con el jugador para que pueda iniciar sesión:</p>
+                <div class="mb-3">
+                    <span class="fw-bold">Usuario:</span>
+                    <span class="badge bg-primary fs-5">{{ username }}</span>
+                </div>
+                <div class="mb-3">
+                    <span class="fw-bold">Contraseña:</span>
+                    <span class="badge bg-warning text-dark fs-5">{{ password }}</span>
+                </div>
+                <a href="{% url 'lista_jugadores' %}" class="btn btn-outline-primary mt-4">Volver a la lista de jugadores</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

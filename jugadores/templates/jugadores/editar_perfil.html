@@ -1,0 +1,192 @@
+{% extends 'jugadores/base.html' %}
+
+{% block titulo %}Editar perfil{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-10 col-lg-8">
+    <div class="card p-4 shadow-sm">
+      <div class="d-flex align-items-center gap-4">
+        <div class="flex-shrink-0 text-center" style="width:140px">
+          {% if admin_edit and jugador and jugador.foto_de_perfil %}
+            <img src="{{ jugador.foto_de_perfil.url }}" alt="Foto de perfil" class="img-fluid rounded-circle border" style="width:120px; height:120px; object-fit:cover;">
+          {% elif user.is_authenticated and user.jugador %}
+            {% if user.jugador.foto_de_perfil %}
+              <img src="{{ user.jugador.foto_de_perfil.url }}" alt="Foto de perfil" class="img-fluid rounded-circle border" style="width:120px; height:120px; object-fit:cover;">
+            {% endif %}
+          {% else %}
+            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width:120px; height:120px;">
+              <i class="bi bi-person-fill" style="font-size:2.5rem; color:#fff"></i>
+            </div>
+          {% endif %}
+          <small class="d-block mt-2 text-muted">Foto de perfil</small>
+        </div>
+        <div class="flex-grow-1">
+          <h2 class="card-title mb-1">Editar perfil</h2>
+          <p class="text-muted mb-0">Actualiza tus datos personales y tu foto. Los cambios se guardarán después de confirmar.</p>
+        </div>
+      </div>
+
+      <hr class="my-3">
+
+      <form id="form-editar-perfil" method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label">{{ form.nombre.label }}</label>
+            {{ form.nombre }}
+            {% if form.nombre.errors %}
+              <div class="text-danger small">{{ form.nombre.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label">{{ form.apellido.label }}</label>
+            {{ form.apellido }}
+            {% if form.apellido.errors %}
+              <div class="text-danger small">{{ form.apellido.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label">{{ form.posicion.label }}</label>
+            {{ form.posicion }}
+            {% if form.posicion.errors %}
+              <div class="text-danger small">{{ form.posicion.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label">{{ form.numero_de_camiseta.label }}</label>
+            {{ form.numero_de_camiseta }}
+            {% if form.numero_de_camiseta.errors %}
+              <div class="text-danger small">{{ form.numero_de_camiseta.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label">{{ form.equipo.label }}</label>
+            {{ form.equipo }}
+            {% if form.equipo.errors %}
+              <div class="text-danger small">{{ form.equipo.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label">{{ form.fecha_de_nacimiento.label }}</label>
+            {{ form.fecha_de_nacimiento }}
+            {% if form.fecha_de_nacimiento.help_text %}
+              <div class="form-text">{{ form.fecha_de_nacimiento.help_text }}</div>
+            {% endif %}
+            {% if form.fecha_de_nacimiento.errors %}
+              <div class="text-danger small">{{ form.fecha_de_nacimiento.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label">Foto de perfil</label>
+            {{ form.foto_de_perfil }}
+            <div class="form-text">Sube una imagen cuadrada para mejor resultado. Máx 2MB.</div>
+            <div id="previewContainer" class="mt-2" aria-live="polite"></div>
+            {% if form.foto_de_perfil.errors %}
+              <div class="text-danger small">{{ form.foto_de_perfil.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="col-12">
+            <div class="d-flex justify-content-end gap-2">
+              {% if admin_edit and jugador %}
+              {# Cuando un staff edita a otro jugador, usar el jugador proporcionado en el contexto #}
+              <a href="{% url 'perfil_jugador' jugador.id %}" class="btn btn-outline-secondary">Cancelar</a>
+              {% elif user.is_authenticated and user.is_staff %}
+              {# Staff que edita su propio perfil o sin jugador relacionado: volver al admin index #}
+              <a href="{% url 'admin:index' %}" class="btn btn-outline-secondary">Cancelar</a>
+              {% elif user.is_authenticated and user.jugador %}
+              <a href="{% url 'perfil_jugador' user.jugador.id %}" class="btn btn-outline-secondary">Cancelar</a>
+              {% else %}
+              <a href="{% url 'inicio' %}" class="btn btn-outline-secondary">Cancelar</a>
+              {% endif %}
+
+              {# Permitir guardar si es administrador editando, o si el usuario está autenticado y es jugador o staff #}
+              {% if admin_edit %}
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModalEditarPerfil">Guardar cambios</button>
+              {% elif user.is_authenticated %}
+                {% if user.jugador or user.is_staff %}
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModalEditarPerfil">Guardar cambios</button>
+                {% else %}
+                  <button type="button" class="btn btn-primary" disabled title="No autorizado">Guardar cambios</button>
+                {% endif %}
+              {% else %}
+                <button type="button" class="btn btn-primary" disabled title="No autorizado">Guardar cambios</button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModalEditarPerfil" tabindex="-1" aria-labelledby="confirmModalLabelEditarPerfil" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabelEditarPerfil" style="color: black">Confirmar edición</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" style="color: black">
+        ¿Estás seguro de que deseas guardar los cambios en tu perfil?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="confirmarGuardarEditarPerfil">Sí, guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Confirmar envío del formulario (usar id explícito para evitar colisiones)
+  var btnConfirmar = document.getElementById('confirmarGuardarEditarPerfil');
+  if (btnConfirmar) {
+    btnConfirmar.addEventListener('click', function() {
+      var form = document.getElementById('form-editar-perfil');
+      if (form) {
+        // desactivar botón para evitar doble submit
+        btnConfirmar.disabled = true;
+        btnConfirmar.classList.add('disabled');
+        form.submit();
+      }
+    });
+  }
+
+  // Preview de imagen
+  var input = document.querySelector('input[type="file"][name="foto_de_perfil"]');
+  var preview = document.getElementById('previewContainer');
+  if (input && preview) {
+    input.addEventListener('change', function(e) {
+      preview.innerHTML = '';
+      var file = e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) return;
+      var img = document.createElement('img');
+      img.className = 'rounded border';
+      img.style.width = '120px';
+      img.style.height = '120px';
+      img.style.objectFit = 'cover';
+      preview.appendChild(img);
+      var reader = new FileReader();
+      reader.onload = function(ev) { img.src = ev.target.result; };
+      reader.readAsDataURL(file);
+    });
+  }
+});
+</script>
+
+{% endblock %}

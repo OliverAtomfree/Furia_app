@@ -1,0 +1,20 @@
+{% extends 'jugadores/base.html' %}
+
+{% block titulo %}Resultados de Partidos{% endblock %}
+
+{% block contenido %}
+    <h1>Resultados de los Partidos</h1>
+    <ul class="list-group">
+        {% for partido in partidos %}
+            <li class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Partido vs {{ partido.rival }}</h5>
+                    <small>{{ partido.fecha }}</small>
+                </div>
+                <p class="mb-1">Marcador: {{ partido.marcador_local }} - {{ partido.marcador_visitante }}</p>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No hay partidos registrados.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

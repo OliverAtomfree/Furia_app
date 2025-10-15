@@ -1,0 +1,35 @@
+{% extends 'jugadores/base.html' %}
+
+{% block titulo %}Mis Pagos{% endblock %}
+
+{% block contenido %}
+<h3>Mis pagos</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Referencia</th>
+            <th>Método</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pago in pagos %}
+        <tr>
+            <td><a href="{% url 'pago_detalle' pago.id %}">{{ pago.id }}</a></td>
+            <td>{{ pago.get_tipo_display }}</td>
+            <td>{{ pago.monto }}</td>
+            <td>{{ pago.fecha }}</td>
+            <td>{{ pago.get_estado_display }}</td>
+            <td>{% if pago.referencia %}{{ pago.referencia|slice:'-4:' }}{% else %}&mdash;{% endif %}</td>
+            <td>{{ pago.metodo }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No tienes pagos registrados.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

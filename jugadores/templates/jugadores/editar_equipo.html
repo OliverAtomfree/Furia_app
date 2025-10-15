@@ -1,0 +1,49 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Editar Equipo{% endblock %}
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <h1 class="text-center mb-4">Editar Equipo</h1>
+        <div class="card p-4 shadow-lg">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" id="form-editar-equipo-{{ equipo.id }}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#confirmModalEditarEquipo{{ equipo.id }}">Guardar Cambios</button>
+                    </div>
+                </form>
+                <!-- Modal de confirmación -->
+                <div class="modal fade" id="confirmModalEditarEquipo{{ equipo.id }}" tabindex="-1" aria-labelledby="confirmModalLabelEditarEquipo{{ equipo.id }}" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="confirmModalLabelEditarEquipo{{ equipo.id }}">Confirmar edición</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                      </div>
+                      <div class="modal-body">
+                        ¿Estás seguro de que deseas guardar los cambios en este equipo?
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="confirmarGuardarEditarEquipo{{ equipo.id }}">Sí, guardar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                  var btnConfirmar = document.getElementById('confirmarGuardarEditarEquipo{{ equipo.id }}');
+                  var form = document.getElementById('form-editar-equipo-{{ equipo.id }}');
+                  if (btnConfirmar && form) {
+                    btnConfirmar.addEventListener('click', function() {
+                      form.submit();
+                    });
+                  }
+                });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

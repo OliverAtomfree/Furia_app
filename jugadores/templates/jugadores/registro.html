@@ -1,0 +1,50 @@
+{% extends 'jugadores/base.html' %}
+
+{% block titulo %}Registrarse{% endblock %}
+
+{% block contenido %}
+            <div class="row justify-content-center mt-5">
+                <div class="col-12 col-md-8 col-lg-5">
+                    <div class="card shadow-lg border-0 p-4" style="background: linear-gradient(135deg, #260D4D 60%, #7B1FA2 100%); color: #FFD600; border-radius: 2rem;">
+                        <div class="text-center mb-3">
+                            <i class="bi bi-person-plus-fill" style="font-size: 3rem; color: #FFD600;"></i>
+                            <h2 class="fw-bold mt-2" style="color: #FFD600;">Registrarse</h2>
+                        </div>
+                        <form method="post" autocomplete="on">
+                            {% csrf_token %}
+                            <div class="row g-3 justify-content-center">
+                                {% for field in form %}
+                                    <div class="col-12">
+                                        <div class="input-group flex-nowrap">
+                                            <span class="input-group-text bg-dark text-warning border-0 fw-bold" id="addon-{{ field.id_for_label }}" style="border-radius: 1rem 0 0 1rem;">{{ field.label }}</span>
+                                            {{ field }}
+                                        </div>
+                                        <style>
+                                            input.form-control {
+                                                border-radius: 0 1rem 1rem 0 !important;
+                                                box-shadow: 0 2px 8px #260D4D;
+                                                transition: box-shadow 0.3s, border-color 0.3s;
+                                            }
+                                            input.form-control:focus {
+                                                border-color: #FFD600;
+                                                box-shadow: 0 0 0 0.2rem #FFD60080;
+                                            }
+                                        </style>
+                                        {% if field.errors %}
+                                            <div class="text-danger small text-center mt-1">{{ field.errors|striptags }}</div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <button type="submit" class="btn w-100 fw-bold py-2 mt-3" style="background: linear-gradient(90deg, #FFD600 60%, #7B1FA2 100%); color: #260D4D; border-radius: 1rem; box-shadow: 0 2px 8px #260D4D;"><i class="bi bi-person-plus-fill"></i> Registrarse</button>
+                        </form>
+
+                         <div class="text-center mt-3">
+                            <a href="{% url 'iniciar_sesion' %}" class="btn btn-outline-warning w-100 fw-bold py-2" style="border-radius: 1rem; border-color: #FFD600;">
+                                <i class="bi bi-person-plus"></i> Ya tienes una cuenta? Inicia sesión
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}

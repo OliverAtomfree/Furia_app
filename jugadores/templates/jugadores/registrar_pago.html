@@ -1,0 +1,268 @@
+{% extends 'jugadores/base.html' %}
+
+{% block titulo %}Registrar Pago{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h3 class="mb-3">Registrar Pago</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.tipo.label_tag }}
+                    {{ form.tipo }}
+                    {{ form.tipo.errors }}
+                </div>
+                <div class="mb-3">
+                    {{ form.monto.label_tag }}
+                    {{ form.monto }}
+                    {{ form.monto.errors }}
+                </div>
+                <div class="mb-3">
+                    {{ form.metodo.label_tag }}
+                    {{ form.metodo }}
+                    {{ form.metodo.errors }}
+                </div>
+                <div id="grupo-referencia" class="mb-3">
+                    {{ form.referencia.label_tag }}
+                    {{ form.referencia }}
+                    {{ form.referencia.errors }}
+                </div>
+                <div id="grupo-descripcion" class="mb-3">
+                    {{ form.descripcion.label_tag }}
+                    {{ form.descripcion }}
+                    <div id="id_descripcion_help" class="form-text small text-muted"></div>
+                    {{ form.descripcion.errors }}
+                </div>
+                <div class="mb-3">
+                    {{ form.comprobante.label_tag }}
+                    {{ form.comprobante }}
+                    {{ form.comprobante.errors }}
+                </div>
+                {{ form.moneda }}
+                <button class="btn btn-primary">Registrar</button>
+            </form>
+            <hr>
+            <div id="instrucciones-pago" class="mt-3">
+                <h5 class="mb-3">Instrucciones de pago</h5>
+
+                <div id="instr-transferencia" class="card instr-card d-none mb-2 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title mb-2">Transferencia bancaria <small>(Bs)</small></h6>
+                        <ul class="list-unstyled mb-2">
+                            <li><strong>Cédula / RIF:</strong> V-30349789</li>
+                            <li class="mt-2"><strong>Teléfono:</strong> <span>0424-1770332</span></li>
+                            <li class="mt-2"><strong>Banco:</strong> DelSur</li>
+                            <li class="mt-2">
+                                <strong>Cuenta:</strong>
+                                <div class="input-group input-group-sm mt-1">
+                                    <input id="cta-transferencia" class="form-control form-control-sm" readonly value="01570027133527012631" aria-label="Cuenta transferencia">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="copyCampo('cta-transferencia', this)" title="Copiar cuenta">Copiar</button>
+                                </div>
+                            </li>
+                            <li class="mt-2"><strong>Titular:</strong> Furia Nocturna</li>
+                        </ul>
+                        <p class="small mb-0">Incluye la referencia en el campo "Referencia" para que podamos identificar tu pago.</p>
+                    </div>
+                </div>
+
+                <div id="instr-pago-movil" class="card instr-card d-none mb-2 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title mb-2">Pago Móvil <small>(Bs)</small></h6>
+                        <ul class="list-unstyled mb-2">
+                            <li class="mt-2">
+                                <strong>Cédula:</strong>
+                                <div class="input-group input-group-sm mt-1">
+                                    <input id="num-pago-movil" class="form-control form-control-sm" readonly value="V-30349789" aria-label="Cédula">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="copyCampo('num-pago-movil', this)" title="Copiar">Copiar</button>
+                                </div>
+                            </li>
+                            <li class="mt-2">
+                                <strong>Número:</strong>
+                                <div class="input-group input-group-sm mt-1">
+                                    <input id="num-pago-movil" class="form-control form-control-sm" readonly value="04241770332" aria-label="Número pago móvil">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="copyCampo('num-pago-movil', this)" title="Copiar número">Copiar</button>
+                                </div>
+                            </li>
+                            <li class="mt-2"><strong>Banco:</strong> DelSur</li>
+                            <li class="mt-2"><strong>Titular:</strong> Furia Nocturna</li>
+                        </ul>
+                        <p class="small mb-0">Realiza el pago y pega la referencia en el campo "Referencia".</p>
+                    </div>
+                </div>
+
+                {# PayPal removed: método eliminado del sistema. #}
+
+                <div id="instr-efectivo" class="card instr-card d-none mb-2 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title mb-2">Divisas / Efectivo</h6>
+                        <p class="mb-2">Entrega el efectivo al encargado el dia de entrenamiento o el dia del partido.</p>
+                    </div>
+                </div>
+
+                <style>
+                    .instr-card { border-left: .35rem solid transparent; }
+                    /* destacar la tarjeta visible */
+                    .instr-card:not(.d-none) { border-left-color: #0d6efd; }
+                    .input-group .form-control[readonly] { background-color: #f8f9fa; }
+                </style>
+
+                <script>
+                    function copyCampo(id, btn) {
+                        var el = document.getElementById(id);
+                        if(!el) return;
+                        var text = el.value || el.innerText || el.textContent;
+                        if (!text) return;
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            navigator.clipboard.writeText(text).then(function(){
+                                var prev = btn.innerHTML;
+                                btn.innerHTML = 'Copiado';
+                                setTimeout(function(){ btn.innerHTML = prev; }, 1200);
+                            });
+                        } else {
+                            var ta = document.createElement('textarea');
+                            ta.value = text;
+                            document.body.appendChild(ta);
+                            ta.select();
+                            try { document.execCommand('copy'); btn.innerHTML = 'Copiado'; setTimeout(function(){ btn.innerHTML = 'Copiar'; }, 1200); } catch(e){}
+                            ta.remove();
+                        }
+                    }
+                </script>
+            </div>
+
+            <script>
+                (function(){
+                    function mostrarInstrucciones(){
+                        var metodo = document.getElementById('id_metodo');
+                        if(!metodo) return;
+                        var v = metodo.value;
+                        var sections = ['instr-transferencia','instr-pago-movil','instr-efectivo'];
+                        sections.forEach(function(id){ document.getElementById(id).classList.add('d-none'); });
+                        // Mostrar sección según el método
+                        if(v === 'transferencia'){
+                            document.getElementById('instr-transferencia').classList.remove('d-none');
+                        } else if(v === 'pago_movil' || v === 'pago_móvil' || v === 'pago-movil' || v === 'movil'){
+                            document.getElementById('instr-pago-movil').classList.remove('d-none');
+                        } else {
+                            document.getElementById('instr-efectivo').classList.remove('d-none');
+                        }
+                        // Ajustar etiqueta de monto y campo moneda oculto
+                        var label = document.querySelector("label[for='id_monto']");
+                        var monedaField = document.getElementById('id_moneda');
+                        var grupoRef = document.getElementById('grupo-referencia');
+                        if(label){
+                            if(v === 'divisas'){
+                                label.textContent = 'Monto (USD)';
+                                if(monedaField) monedaField.value = 'USD';
+                                // ocultar referencia para divisas
+                                if(grupoRef) grupoRef.classList.add('d-none');
+                            } else {
+                                label.textContent = 'Monto (Bs)';
+                                if(monedaField) monedaField.value = 'VES';
+                                // mostrar referencia por defecto (otros métodos)
+                                if(grupoRef) grupoRef.classList.remove('d-none');
+                            }
+                        }
+                    }
+                    document.addEventListener('DOMContentLoaded', function(){
+                        // asegurar valor por defecto si el servidor no lo estableció
+                        var metodo = document.getElementById('id_metodo');
+                        if(metodo && !metodo.value){
+                            metodo.value = 'pago_movil';
+                        }
+                        mostrarInstrucciones();
+                        if(metodo) metodo.addEventListener('change', mostrarInstrucciones);
+                    });
+                })();
+            </script>
+            <script>
+                (function(){
+                    // Mejoras cliente: forzar VES en pago_movil/transferencia,
+                    // sanitizar referencia y mostrar contador de dígitos
+                    function enhance(){
+                        var form = document.querySelector('form');
+                        if(!form) return;
+                        var metodo = document.getElementById('id_metodo');
+                        var moneda = document.getElementById('id_moneda');
+                        var referencia = document.getElementById('id_referencia');
+                        var comprobante = document.getElementById('id_comprobante');
+                        var descripcion = document.getElementById('id_descripcion');
+
+                        function apply(){
+                            var m = metodo ? metodo.value : null;
+                            if(moneda){
+                                if(m === 'pago_movil' || m === 'transferencia'){
+                                    moneda.value = 'VES';
+                                    moneda.querySelectorAll('option').forEach(function(opt){ opt.disabled = (opt.value === 'USD'); });
+                                    moneda.setAttribute('aria-disabled','true');
+                                } else {
+                                    moneda.querySelectorAll('option').forEach(function(opt){ opt.disabled = false; });
+                                    moneda.removeAttribute('aria-disabled');
+                                }
+                            }
+                            var grupoRef = document.getElementById('grupo-referencia');
+                            if(referencia){
+                                if(m === 'pago_movil' || m === 'transferencia'){
+                                    referencia.required = true;
+                                    if(grupoRef) grupoRef.classList.remove('d-none');
+                                } else if(m === 'divisas' || m === 'efectivo'){
+                                    // ocultar referencia para divisas y efectivo
+                                    referencia.required = false;
+                                    if(grupoRef) grupoRef.classList.add('d-none');
+                                } else {
+                                    referencia.required = false;
+                                    if(grupoRef) grupoRef.classList.remove('d-none');
+                                }
+                            }
+                            if(comprobante){
+                                if(m === 'pago_movil' || m === 'transferencia'){
+                                    comprobante.required = true;
+                                } else {
+                                    comprobante.required = false;
+                                }
+                            }
+                        }
+
+                        function sanitize(ev){
+                            var el = ev.target;
+                            if(!el) return;
+                            el.value = (el.value || '').replace(/\D/g,'').slice(0,6);
+                            // contador
+                            var help = document.getElementById(el.id + '_help');
+                            if(!help){ help = document.createElement('div'); help.id = el.id + '_help'; help.className = 'form-text small'; el.parentNode.appendChild(help); }
+                            help.textContent = (el.value.length||0) + ' / 6 dígitos';
+                        }
+
+                        if(metodo) metodo.addEventListener('change', apply);
+                            if(referencia){ referencia.addEventListener('input', sanitize); referencia.value = (referencia.value||'').replace(/\D/g,'').slice(0,6); sanitize({target: referencia}); }
+                            // configurar campo descripcion: maxlength, rows y contador
+                            if(descripcion){
+                                var max = 50;
+                                descripcion.setAttribute('maxlength', max);
+                                if(descripcion.tagName.toLowerCase() === 'textarea') descripcion.setAttribute('rows', 4);
+                                if(!descripcion.getAttribute('placeholder')) descripcion.setAttribute('placeholder', 'Opcional: agrega más detalles sobre el pago');
+                                var helpDesc = document.getElementById('id_descripcion_help');
+                                function updateDescHelp(){ if(!helpDesc) return; helpDesc.textContent = (descripcion.value.length||0) + ' / ' + max + ' caracteres'; }
+                                descripcion.addEventListener('input', updateDescHelp);
+                                // inicializar
+                                updateDescHelp();
+                            }
+                        apply();
+
+                        form.addEventListener('submit', function(ev){
+                            // comprobación rápida cliente
+                            if(referencia && referencia.required && referencia.value.length < 4){
+                                ev.preventDefault(); referencia.focus();
+                                return false;
+                            }
+                        });
+                    }
+                    document.addEventListener('DOMContentLoaded', enhance);
+                })();
+            </script>
+        </div>
+    </div>
+</div>
+{% endblock %}

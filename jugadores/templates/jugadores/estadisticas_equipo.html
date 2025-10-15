@@ -1,0 +1,184 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Estadísticas del Equipo 📈{% endblock %}
+{% block contenido %}
+<div class="container mt-5 px-2 px-md-4">
+    <div class="card shadow-lg border-0 rounded-4 mb-4" style="background: linear-gradient(90deg, #4A148C 60%, #7B1FA2 100%);">
+        <h2 class="text-center mb-4 text-light fw-bold" style="margin-top: revert;">Estadísticas del Equipo Furia Nocturna</h2>
+    </div>
+    <div class="row g-4 mb-4 justify-content-center">
+        <div class="col-12 col-sm-10 offset-sm-1 col-md-6 col-lg-4 d-flex align-items-stretch">
+            <div class="card shadow-lg border-0 text-center w-100 h-100" style="min-height: 320px; background: linear-gradient(90deg, #7B1FA2 60%, #4A148C 100%); color: #fff;">
+                <div class="card-body py-4">
+                    <h3 class="card-title mb-3 text-warning">⚽ Máximo Goleador</h3>
+                    <span class="badge bg-warning text-dark fs-3 mb-2">{{ max_goleador.goles }} goles</span>
+                    <div class="text-warning fw-bold mb-2" style="font-size:1.3rem;"></div>
+                    {% if max_goleador.nombre != 'N/A' %}
+                        {% for jugador in estadisticas_jugadores %}
+                            {% if jugador.jugador.nombre == max_goleador.nombre and jugador.jugador.apellido == max_goleador.apellido %}
+                                <div class="d-flex flex-column align-items-center mt-3">
+                                    {% if jugador.jugador.foto_de_perfil %}
+                                        <img src="{{ jugador.jugador.foto_de_perfil.url }}" alt="Foto de perfil" class="rounded-circle mb-2 img-fluid" style="width: 90px; height: 90px; max-width: 100vw; object-fit: cover; border: 3px solid #9C27B0;">
+                                    {% else %}
+                                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-2" style="width: 90px; height: 90px;">
+                                            <span class="text-white fs-2 fw-bold">?</span>
+                                        </div>
+                                    {% endif %}
+                                    <span class="fw-bold fs-4">{{ jugador.jugador.nombre }} {{ jugador.jugador.apellido }}</span>
+                                    <span class="text-muted fs-5">#{{ jugador.jugador.numero_de_camiseta }}</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-10 offset-sm-1 col-md-6 col-lg-4 d-flex align-items-stretch">
+            <div class="card shadow-lg border-0 text-center w-100 h-100" style="min-height: 320px; background: linear-gradient(90deg, #7B1FA2 60%, #4A148C 100%); color: #fff;">
+                <div class="card-body py-4">
+                    <h3 class="card-title mb-3 text-info">🅰️ Máximo Asistidor</h3>
+                    <span class="badge bg-info text-dark fs-3 mb-2">{{ max_asistente.asistencias }} asistencia{{ max_asistente.asistencias|pluralize }}</span>
+                    <div class="text-info fw-bold mb-2" style="font-size:1.3rem;"></div>
+                    {% if max_asistente.nombre != 'N/A' %}
+                        {% for jugador in estadisticas_jugadores %}
+                            {% if jugador.jugador.nombre == max_asistente.nombre and jugador.jugador.apellido == max_asistente.apellido %}
+                                <div class="d-flex flex-column align-items-center mt-3">
+                                    {% if jugador.jugador.foto_de_perfil %}
+                                        <img src="{{ jugador.jugador.foto_de_perfil.url }}" alt="Foto de perfil" class="rounded-circle mb-2 img-fluid" style="width: 90px; height: 90px; max-width: 100vw; object-fit: cover; border: 3px solid #9C27B0;">
+                                    {% else %}
+                                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-2" style="width: 90px; height: 90px;">
+                                            <span class="text-white fs-2 fw-bold">?</span>
+                                        </div>
+                                    {% endif %}
+                                    <span class="fw-bold fs-4">{{ jugador.jugador.nombre }} {{ jugador.jugador.apellido }}</span>
+                                    <span class="text-muted fs-5">#{{ jugador.jugador.numero_de_camiseta }}</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-10 offset-sm-1 col-md-6 col-lg-4 d-flex align-items-stretch">
+            <div class="card shadow-lg border-0 text-center w-100 h-100" style="min-height: 320px;">
+                <div class="card-body py-4">
+                    <h3 class="card-title mb-3">Tarjetas Amarillas</h3>
+                    <span class="badge bg-warning text-dark fs-3 mb-2">{{ tarjetas_amarillas }} amarilla{{ tarjetas_amarillas|pluralize }}</span>
+                    
+                    {% if jugador_amarillas %}
+                        <div class="d-flex flex-column align-items-center mt-3">
+                            {% if jugador_amarillas.foto_de_perfil %}
+                                <img src="{{ jugador_amarillas.foto_de_perfil.url }}" alt="Foto de perfil" class="rounded-circle mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #9C27B0;">
+                            {% else %}
+                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-2" style="width: 100px; height: 100px;">
+                                    <span class="text-white fs-2 fw-bold">?</span>
+                                </div>
+                            {% endif %}
+                            <span class="fw-bold fs-4">{{ jugador_amarillas.nombre }} {{ jugador_amarillas.apellido }}</span>
+                            <span class="text-warning fw-bold fs-2" style="letter-spacing:2px;">#{{ jugador_amarillas.numero_de_camiseta }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-10 offset-sm-1 col-md-6 col-lg-4 d-flex align-items-stretch">
+            <div class="card shadow-lg border-0 text-center w-100 h-100" style="min-height: 320px;">
+                <div class="card-body py-4">
+                    <h3 class="card-title mb-3">Tarjetas Rojas</h3>
+                    <span class="badge bg-danger fs-3 mb-2">{{ tarjetas_rojas }} roja{{ tarjetas_rojas|pluralize }}</span>
+                    
+                    {% if jugador_rojas %}
+                        <div class="d-flex flex-column align-items-center mt-3">
+                            {% if jugador_rojas.foto_de_perfil %}
+                                <img src="{{ jugador_rojas.foto_de_perfil.url }}" alt="Foto de perfil" class="rounded-circle mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #9C27B0;">
+                            {% else %}
+                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-2" style="width: 100px; height: 100px;">
+                                    <span class="text-white fs-2 fw-bold">?</span>
+                                </div>
+                            {% endif %}
+                            <span class="fw-bold fs-4">{{ jugador_rojas.nombre }} {{ jugador_rojas.apellido }}</span>
+                            <span class="text-warning fw-bold fs-2" style="letter-spacing:2px;">#{{ jugador_rojas.numero_de_camiseta }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-10 offset-sm-1 col-md-6 col-lg-4 d-flex align-items-stretch">
+            <div class="card shadow-lg border-0 text-center w-100 h-100" style="min-height: 320px;">
+                <div class="card-body py-4">
+                    <h3 class="card-title mb-3">% de Victorias</h3>
+                    <span class="badge bg-primary fs-3 mb-2">{{ porcentaje_victorias }}%</span>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow-lg border-0 rounded-4 mb-4" style="background: linear-gradient(90deg, #4A148C 60%, #7B1FA2 100%);">
+        <h2 class="text-center mb-4 text-light fw-bold" style="margin-top: revert;">Estadísticas por Jugador</h2>
+    </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for stat in estadisticas_jugadores %}
+        <div class="col d-flex align-items-stretch">
+            <div class="card h-100 shadow-lg border-0 w-100" style="min-height: 360px; background: linear-gradient(120deg, #1a093e 60%, #4A148C 100%); color: #7B1FA2;">
+                <div class="d-flex justify-content-center p-3 p-md-4">
+                    {% if stat.jugador.foto_de_perfil %}
+                        <img src="{{ stat.jugador.foto_de_perfil.url }}" alt="Foto de perfil de {{ stat.jugador.nombre }}" class="rounded-circle img-fluid shadow" style="width: 100px; height: 100px; object-fit: cover; border: 4px solid #7B1FA2; box-shadow: 0 2px 12px #260D4D;">
+                    {% else %}
+                        <div class="rounded-circle bg-gradient d-flex align-items-center justify-content-center shadow" style="width: 100px; height: 100px; background: linear-gradient(135deg, #7B1FA2 60%, #4A148C 100%);">
+                            <span class="text-white fs-1 fw-bold">?</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-body text-center px-1 px-md-2">
+                    <div class="mb-3 text-center">
+                        <h4 class="card-title fw-bold mb-1" style="color: #FFD600; letter-spacing:1px;">
+                            {{ stat.jugador.nombre }} <span style="color: #fff;">{{ stat.jugador.apellido }}</span>
+                        </h4>
+                    </div>
+                    <div class="d-flex flex-column align-items-center mb-3">
+                        <span class="badge rounded-pill px-3 py-2 mb-2" style="background: linear-gradient(90deg, #7B1FA2 60%, #4A148C 100%); color: #fff; font-size: 1.1rem; box-shadow: 0 2px 8px #260D4D;">
+                            {{ stat.jugador.posicion }}
+                        </span>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:64px; height:64px; background:linear-gradient(135deg,#7B1FA2 0%,#4A148C 100%); box-shadow:0 6px 18px rgba(75,0,130,0.28); border:4px solid #FFD600;">
+                            <span class="fw-bold" style="color:#FFD600; font-size:2rem; letter-spacing:1px;">{{ stat.jugador.numero_de_camiseta }}</span>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table mb-0 fs-6 align-middle" style="border-radius: 12px; overflow: hidden; background: #510071; color: #FFD600; box-shadow: 0 2px 12px #260D4D; border: none;">
+                            <tbody style="background:#510071;">
+                                <tr>
+                                    <td class="text-start py-2"><span class="badge" style="background: #FFD600; color: #260D4D; border: none;"><i class="bi bi-trophy-fill"></i> Goles</span></td>
+                                    <td class="text-end py-2"><span class="fw-bold" style="color:black; font-size:1.1em;">{{ stat.goles }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start py-2"><span class="badge" style="background: #7B1FA2; color: #FFD600; border: none;"><i class="bi bi-arrow-up-right-circle-fill"></i> Asistencias</span></td>
+                                    <td class="text-end py-2"><span class="fw-bold" style="color:black; font-size:1.1em;">{{ stat.asistencias }} </span></td>
+                                </tr>
+                                <tr style="background:#510071;">
+                                    <td class="text-start py-2"><span class="badge" style="background: #FFD600; color: #260D4D; border: none;"><i class="bi bi-exclamation-triangle-fill"></i> Amarillas</span></td>
+                                    <td class="text-end py-2"><span class="fw-bold" style="color:black; font-size:1.1em;">{{ stat.tarjetas_amarillas }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start py-2"><span class="badge" style="background: #260D4D; color: #FFD600; border: none;"><i class="bi bi-x-circle-fill"></i> Rojas</span></td>
+                                    <td class="text-end py-2"><span class="fw-bold" style="color:black; font-size:1.1em;">{{ stat.tarjetas_rojas }} </span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if stat.tarjetas %}
+                    <div class="mt-2 text-start small text-light">
+                        <strong>Historial de tarjetas:</strong>
+                        <ul class="mb-0">
+                            {% for t in stat.tarjetas %}
+                                <li>{{ t.get_tipo_display }}{% if t.minuto %} ({{ t.minuto }}'){% endif %} - {{ t.partido }} - {{ t.fecha|date:'Y-m-d H:i' }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

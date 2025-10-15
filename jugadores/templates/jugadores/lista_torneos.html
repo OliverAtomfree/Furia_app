@@ -1,0 +1,36 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Lista de Torneos{% endblock %}
+{% block contenido %}
+<div class="container py-4">
+  <h2 class="mb-4 text-center">Torneos Registrados</h2>
+  <form method="get" class="row mb-3 g-2 align-items-end">
+    <div class="col-md-6 mx-auto">
+      <input type="text" class="form-control" name="busqueda" value="{{ busqueda|default:'' }}" placeholder="Buscar torneo por nombre...">
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+  </form>
+  <div class="row g-4 justify-content-center">
+    {% for torneo in torneos %}
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card p-3 h-100 text-center shadow-lg">
+          <div class="display-4 mb-2" style="color: #FFD600;"><i class="bi bi-trophy-fill"></i></div>
+          <h5 class="card-title mt-2">{{ torneo.nombre }}</h5>
+          <p class="card-text mb-1"><span class="fw-bold">Inicio:</span> {{ torneo.fecha_inicio }}</p>
+          <p class="card-text mb-1"><span class="fw-bold">Fin:</span> {{ torneo.fecha_fin|default:'-' }}</p>
+          <div class="mt-3 d-flex justify-content-center gap-2">
+            <a href="{% url 'torneo_detalle' torneo.id %}" class="btn btn-outline-primary btn-sm">Ver</a>
+            {% if user.is_staff %}
+              <a href="{% url 'editar_torneo' torneo.id %}" class="btn btn-primary btn-sm">Editar</a>
+              <a href="{% url 'editar_torneo' torneo.id %}" class="btn btn-secondary btn-sm">Agregar equipos</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center">No hay torneos registrados.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+PS D:\oliver_app> & D:/oliver_app/env2/Scripts/Activate.ps1
+
+(env2) PS D:\oliver_app> .\env2\Scripts\python.exe manage.py makemigrations jugadores
+
+(env2) PS D:\oliver_app> .\env2\Scripts\python.exe manage.py migrate
+
+(env2) PS D:\oliver_app> python manage.py runserver

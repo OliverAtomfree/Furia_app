@@ -1,0 +1,47 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Encuestas / Votaciones ✅{% endblock %}
+{% block contenido %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Encuestas y Votaciones</h2>
+    {% if mensaje %}
+        <div class="alert alert-success text-center">{{ mensaje }}</div>
+    {% endif %}
+    <div class="card mb-4">
+        <div class="card-header">Votar al “Jugador del Partido”</div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="jugador" class="form-label">Selecciona al Jugador:</label>
+                    <select class="form-select" id="jugador" name="jugador">
+                        {% for jugador in jugadores %}
+                        <option value="{{ jugador.id }}">{{ jugador.nombre }} {{ jugador.apellido }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Votar</button>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">Decidir uniforme</div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">¿Qué camiseta usar?</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="camiseta" id="roja" value="roja">
+                        <label class="form-check-label" for="roja">Roja</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="camiseta" id="blanca" value="blanca">
+                        <label class="form-check-label" for="blanca">Blanca</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Votar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

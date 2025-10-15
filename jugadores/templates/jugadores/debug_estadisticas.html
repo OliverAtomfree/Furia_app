@@ -1,0 +1,27 @@
+{% extends 'jugadores/base.html' %}
+{% block titulo %}Debug Estadísticas{% endblock %}
+{% block contenido %}
+<div class="container mt-4">
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% else %}
+    <h3>Depuración: {{ jugador.nombre }} {{ jugador.apellido }}</h3>
+    <h5 class="mt-3">Estadísticas relacionadas</h5>
+    <ul>
+      {% for e in estadisticas %}
+        <li>Partido: {{ e.partido }} | goles: {{ e.goles }} | asistencias: {{ e.asistencias }} | anotadores: {% for a in e.anotadores.all %}{{ a.nombre }} {{ a.apellido }}; {% endfor %}</li>
+      {% empty %}
+        <li>No hay estadisticas asociadas</li>
+      {% endfor %}
+    </ul>
+    <h5 class="mt-3">Tarjetas</h5>
+    <ul>
+      {% for t in tarjetas %}
+        <li>{{ t.get_tipo_display }}{% if t.minuto %} ({{ t.minuto }}'){% endif %} - {{ t.partido }} - {{ t.fecha }}</li>
+      {% empty %}
+        <li>No hay tarjetas para este jugador</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
+{% endblock %}

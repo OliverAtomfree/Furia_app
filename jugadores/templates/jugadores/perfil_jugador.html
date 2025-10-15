@@ -1,0 +1,149 @@
+{% extends 'jugadores/base.html' %}
+
+{% block titulo %}{{ jugador.nombre }} {{ jugador.apellido }}{% endblock %}
+
+{% block contenido %}
+<div class="container py-5">
+    {% if mensaje_exito %}
+    <div class="alert alert-success text-center mb-4" role="alert">
+        {# Solo renderizamos HTML sin escapar para staff/superuser. Usamos if anidado porque
+           el motor de plantillas de Django no permite paréntesis en las condiciones. #}
+        {% if user.is_authenticated %}
+            {% if user.is_staff or user.is_superuser %}
+                {{ mensaje_exito|safe }}
+            {% else %}
+                {{ mensaje_exito|escape }}
+            {% endif %}
+        {% else %}
+            {{ mensaje_exito|escape }}
+        {% endif %}
+    </div>
+    {% endif %}
+    <div class="bg-white shadow-lg rounded-4 overflow-hidden" style="border: 4px solid #7B1FA2; background: linear-gradient(90deg, #4A148C 60%, #7B1FA2 100%);">
+        <div class="text-center text-light py-5" style="background-color: #7B1FA2; position: relative;">
+            <img src="/media/equipos/logos/Furia.png" alt="Escudo Furia Nocturna" class="position-absolute top-0 start-0 m-4" style="width: 15%;">
+            <div class="d-inline-block p-2 bg-white rounded-circle mb-3" style="background-color: #CDDC39 !important">
+                {% if jugador.foto_de_perfil %}
+                    <img src="{{ jugador.foto_de_perfil.url }}" alt="Foto de perfil de {{ jugador.nombre }}" class="img-fluid rounded-circle" style="width: 200px; height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" style="width: 200px; height: 200px;">
+                        <span class="text-white fs-1 fw-bold">?</span>
+                    </div>
+                {% endif %}
+            </div>
+            <h1 class="fw-bold m-0 mt-3 text-warning">{{ jugador.nombre }} {{ jugador.apellido }}</h1>
+            <h4 class="mt-2 text-light">{{ jugador.posicion }} <span class="badge bg-warning text-dark">Nro. {{ jugador.numero_de_camiseta }}</span></h4>
+            <h4 class="mt-2 text-light">
+                <span class="badge bg-light text-dark ms-2">
+                    {% if edad is not None %}{{ edad }} años{% elif jugador.fecha_de_nacimiento %}{{ jugador.fecha_de_nacimiento|date:"d/m/Y" }}{% else %}--{% endif %}
+                </span>
+            </h4>
+            {% if user.is_staff %}
+            <div class="mt-4 p-3 bg-white rounded-3 text-dark d-inline-block shadow" style="min-width:260px;outline: inset;">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="me-3">
+                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-bold" style="width:56px; height:56px;">
+                            {{ jugador.user.username|slice:":1"|upper }}
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold">{{ jugador.user.username }}</h6>
+                        <small class="text-muted">Perfil de usuario</small>
+                    </div>
+                </div>
+
+                <div class="mb-2 small">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Cédula</span>
+                        <span class="fw-bold">V-{{ jugador.cedula }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Nacimiento</span>
+                        <span class="fw-bold">{% if jugador.fecha_de_nacimiento %}{{ jugador.fecha_de_nacimiento|date:"d/m/Y" }}{% else %}--{% endif %}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Edad</span>
+                        <span class="fw-bold">{% if edad is not None %}{{ edad }} años{% else %}--{% endif %}</span>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="text-muted">Tipo de usuario</span>
+                    <div class="mt-1">
+                        {% if jugador.user.is_superuser %}
+                            <span class="badge bg-danger">Administrador</span>
+                        {% elif jugador.user.is_staff %}
+                            <span class="badge bg-warning text-dark">Staff</span>
+                        {% elif jugador.user.groups.all|length > 0 %}
+                            {% for grupo in jugador.user.groups.all %}
+                                {% if grupo.name == 'jugadores' %}
+                                    <span class="badge bg-success">Jugador</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Usuario</span>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <span class="badge bg-secondary">Usuario</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="p-4 p-md-5">
+            <div class="row g-5">
+                <!-- Estadísticas y totales -->
+                <div class="col-lg-6">
+                    <h2 class="fw-bold text-light mb-4">Estadísticas</h2>
+                    <div class="bg-transparent p-4 rounded-3 mb-4">
+                        <div class="d-flex text-light justify-content-between align-items-center mb-2">
+                            <h5 class="fw-bold m-0">Goles totales:</h5>
+                            <span class="fs-4 text-light fw-bold">{{ totales.goles_totales|default:0 }}</span>
+                        </div>
+                        <div class="d-flex text-light justify-content-between align-items-center">
+                            <h5 class="fw-bold m-0">Asistencias totales:</h5>
+                            <span class="fs-4 text-light fw-bold">{{ totales.asistencias_totales|default:0 }}</span>
+                        </div>
+                    </div>
+
+                    {% if estadisticas %}
+                        <ul class="list-group list-group-flush border rounded-3" style="background: rgba(255,255,255,0.05);">
+                            {% for stat in estadisticas %}
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-3" style="background: rgba(123,31,162,0.15); border: none;">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold text-warning">Furia Nocturna vs {{ stat.partido.equipo_visitante }}</h6>
+                                        <small class="text-light">{{ stat.partido.fecha }}</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="d-block text-warning">⚽ Goles: <span class="fw-bold">{{ stat.goles }}</span></small>
+                                        <small class="d-block text-info">🅰️ Asistencias: <span class="fw-bold">{{ stat.asistencias }}</span></small>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-center text-light">No hay estadísticas registradas.</p>
+                    {% endif %}
+                </div>
+
+
+                </div>
+            </div>
+            {% if user.is_authenticated %}
+                <div class="text-center mt-5">
+                    {% if user.is_staff or user.is_superuser %}
+                        <a href="{% url 'editar_perfil_admin' jugador.id %}" class="btn btn-warning fw-bold">Editar Perfil</a>
+                    {% else %}
+                        {% if user.jugador.id == jugador.id %}
+                            <a href="{% url 'editar_perfil' %}" class="btn btn-warning fw-bold">Editar Perfil</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="text-center mt-5">
+        <a href="{% url 'inicio' %}" class="btn btn-secondary fw-bold">Volver a la lista de jugadores</a>
+    </div>
+</div>
+{% endblock %}
