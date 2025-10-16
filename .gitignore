@@ -1,0 +1,20 @@
+# Ignorar la base de datos de desarrollo
+*.sqlite3
+
+# Ignorar archivos compilados de Python
+__pycache__/
+*.pyc
+
+# Ignorar variables de entorno/secretos (¡Nunca subas esto!)
+.env
+env/
+venv/
+.vscode/
+
+# Ignorar carpetas generadas por Django y el sistema
+staticfiles/
+media/
+
+# Ignorar archivos generados por el sistema operativo
+.DS_Store
+Thumbs.db

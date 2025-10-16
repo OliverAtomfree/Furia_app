@@ -23,11 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-v92d7f@miexof%-(cu!zkpu9z@^25_ce=cy85#j__o2&zarrcs'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-#DEBUG = True
+#DEBUG = False
+DEBUG = True
 
-#ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.1.103', 'testserver']
-ALLOWED_HOSTS = ['tudominio.com', 'www.tudominio.com', 'tu_ip_del_servidor']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.1.103', 'testserver']
+#ALLOWED_HOSTS = ['tudominio.com', 'www.tudominio.com', 'tu_ip_del_servidor']
 
 # Application definition
 
@@ -65,6 +65,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # Permitir uso de MEDIA_URL en plantillas mediante el context processor
+                'django.template.context_processors.media',
             ],
         },
     },
