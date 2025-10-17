@@ -26,8 +26,8 @@
     {% for jugador in jugadores %}
       <div class="col-12 col-sm-6 col-md-4 col-lg-3 jugador-card" data-nombre="{{ jugador.nombre|lower }}" data-apellido="{{ jugador.apellido|lower }}" data-equipo="{{ jugador.equipo.nombre|lower }}">
         <div class="card p-3 h-100 text-center shadow-lg">
-          {% if jugador.imagen_url %}
-            <img src="{{ jugador.imagen_url.url }}" class="rounded-circle mx-auto mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 2px 8px #260D4D;" alt="Foto de perfil">
+          {% if jugador.foto_de_perfil %}
+            <img src="{{ jugador.foto_de_perfil.url }}" class="rounded-circle mx-auto mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 2px 8px #260D4D;" alt="Foto de perfil">
           {% else %}
             <div class="rounded-circle mx-auto mb-2 bg-secondary d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; color: #fff; font-size: 2rem;"> <i class="bi bi-person-circle"></i> </div>
           {% endif %}

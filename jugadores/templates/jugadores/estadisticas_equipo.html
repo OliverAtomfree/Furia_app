@@ -1,4 +1,5 @@
 {% extends 'jugadores/base.html' %}
+{% load static %}
 {% block titulo %}Estadísticas del Equipo 📈{% endblock %}
 {% block contenido %}
 <div class="container mt-5 px-2 px-md-4">
@@ -17,11 +18,9 @@
                             {% if jugador.jugador.nombre == max_goleador.nombre and jugador.jugador.apellido == max_goleador.apellido %}
                                 <div class="d-flex flex-column align-items-center mt-3">
                                     {% if jugador.jugador.imagen_url %}
-                                        <img src="{{ jugador.jugador.imagen_url.url }}" alt="Foto de perfil" class="rounded-circle mb-2 img-fluid" style="width: 90px; height: 90px; max-width: 100vw; object-fit: cover; border: 3px solid #9C27B0;">
+                                        <img src="{{ jugador.jugador.imagen_url }}" alt="Foto de perfil" class="rounded-circle mb-2 img-fluid" style="width: 90px; height: 90px; max-width: 100vw; object-fit: cover; border: 3px solid #9C27B0;">
                                     {% else %}
-                                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-2" style="width: 90px; height: 90px;">
-                                            <span class="text-white fs-2 fw-bold">?</span>
-                                        </div>
+                                        <img src="{% static 'jugadores/images/avatar-placeholder.png' %}" alt="Avatar por defecto" class="rounded-circle mb-2 img-fluid" style="width: 90px; height: 90px; max-width: 100vw; object-fit: cover; border: 3px solid #9C27B0;">
                                     {% endif %}
                                     <span class="fw-bold fs-4">{{ jugador.jugador.nombre }} {{ jugador.jugador.apellido }}</span>
                                     <span class="text-muted fs-5">#{{ jugador.jugador.numero_de_camiseta }}</span>
@@ -43,11 +42,9 @@
                             {% if jugador.jugador.nombre == max_asistente.nombre and jugador.jugador.apellido == max_asistente.apellido %}
                                 <div class="d-flex flex-column align-items-center mt-3">
                                     {% if jugador.jugador.imagen_url %}
-                                        <img src="{{ jugador.jugador.imagen_url.url }}" alt="Foto de perfil" class="rounded-circle mb-2 img-fluid" style="width: 90px; height: 90px; max-width: 100vw; object-fit: cover; border: 3px solid #9C27B0;">
+                                        <img src="{{ jugador.jugador.imagen_url }}" alt="Foto de perfil" class="rounded-circle mb-2 img-fluid" style="width: 90px; height: 90px; max-width: 100vw; object-fit: cover; border: 3px solid #9C27B0;">
                                     {% else %}
-                                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-2" style="width: 90px; height: 90px;">
-                                            <span class="text-white fs-2 fw-bold">?</span>
-                                        </div>
+                                        <img src="{% static 'jugadores/images/avatar-placeholder.png' %}" alt="Avatar por defecto" class="rounded-circle mb-2 img-fluid" style="width: 90px; height: 90px; max-width: 100vw; object-fit: cover; border: 3px solid #9C27B0;">
                                     {% endif %}
                                     <span class="fw-bold fs-4">{{ jugador.jugador.nombre }} {{ jugador.jugador.apellido }}</span>
                                     <span class="text-muted fs-5">#{{ jugador.jugador.numero_de_camiseta }}</span>
@@ -66,13 +63,11 @@
                     
                     {% if jugador_amarillas %}
                         <div class="d-flex flex-column align-items-center mt-3">
-                            {% if jugador_amarillas.foto_de_perfil %}
-                                <img src="{{ jugador_amarillas.foto_de_perfil.url }}" alt="Foto de perfil" class="rounded-circle mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #9C27B0;">
-                            {% else %}
-                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-2" style="width: 100px; height: 100px;">
-                                    <span class="text-white fs-2 fw-bold">?</span>
-                                </div>
-                            {% endif %}
+                            {% if jugador_amarillas.imagen_url %}
+                                    <img src="{{ jugador_amarillas.imagen_url }}" alt="Foto de perfil" class="rounded-circle mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #9C27B0;">
+                                {% else %}
+                                    <img src="{% static 'jugadores/images/avatar-placeholder.png' %}" alt="Avatar por defecto" class="rounded-circle mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #9C27B0;">
+                                {% endif %}
                             <span class="fw-bold fs-4">{{ jugador_amarillas.nombre }} {{ jugador_amarillas.apellido }}</span>
                             <span class="text-warning fw-bold fs-2" style="letter-spacing:2px;">#{{ jugador_amarillas.numero_de_camiseta }}</span>
                         </div>
@@ -88,13 +83,11 @@
                     
                     {% if jugador_rojas %}
                         <div class="d-flex flex-column align-items-center mt-3">
-                            {% if jugador_rojas.foto_de_perfil %}
-                                <img src="{{ jugador_rojas.foto_de_perfil.url }}" alt="Foto de perfil" class="rounded-circle mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #9C27B0;">
-                            {% else %}
-                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-2" style="width: 100px; height: 100px;">
-                                    <span class="text-white fs-2 fw-bold">?</span>
-                                </div>
-                            {% endif %}
+                            {% if jugador_rojas.imagen_url %}
+                                    <img src="{{ jugador_rojas.imagen_url }}" alt="Foto de perfil" class="rounded-circle mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #9C27B0;">
+                                {% else %}
+                                    <img src="{% static 'jugadores/images/avatar-placeholder.png' %}" alt="Avatar por defecto" class="rounded-circle mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #9C27B0;">
+                                {% endif %}
                             <span class="fw-bold fs-4">{{ jugador_rojas.nombre }} {{ jugador_rojas.apellido }}</span>
                             <span class="text-warning fw-bold fs-2" style="letter-spacing:2px;">#{{ jugador_rojas.numero_de_camiseta }}</span>
                         </div>
@@ -121,11 +114,9 @@
             <div class="card h-100 shadow-lg border-0 w-100" style="min-height: 360px; background: linear-gradient(120deg, #1a093e 60%, #4A148C 100%); color: #7B1FA2;">
                 <div class="d-flex justify-content-center p-3 p-md-4">
                     {% if stat.jugador.imagen_url %}
-                        <img src="{{ stat.jugador.imagen_url.url }}" alt="Foto de perfil de {{ stat.jugador.nombre }}" class="rounded-circle img-fluid shadow" style="width: 100px; height: 100px; object-fit: cover; border: 4px solid #7B1FA2; box-shadow: 0 2px 12px #260D4D;">
+                        <img src="{{ stat.jugador.imagen_url }}" alt="Foto de perfil de {{ stat.jugador.nombre }}" class="rounded-circle img-fluid shadow" style="width: 100px; height: 100px; object-fit: cover; border: 4px solid #7B1FA2; box-shadow: 0 2px 12px #260D4D;">
                     {% else %}
-                        <div class="rounded-circle bg-gradient d-flex align-items-center justify-content-center shadow" style="width: 100px; height: 100px; background: linear-gradient(135deg, #7B1FA2 60%, #4A148C 100%);">
-                            <span class="text-white fs-1 fw-bold">?</span>
-                        </div>
+                        <img src="{% static 'jugadores/images/avatar-placeholder.png' %}" alt="Avatar por defecto" class="rounded-circle img-fluid shadow" style="width: 100px; height: 100px; object-fit: cover; border: 4px solid #7B1FA2; box-shadow: 0 2px 12px #260D4D;">
                     {% endif %}
                 </div>
                 <div class="card-body text-center px-1 px-md-2">

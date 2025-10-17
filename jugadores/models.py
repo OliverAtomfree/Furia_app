@@ -84,7 +84,7 @@ class Equipo(models.Model):
     Modelo para los datos del equipo de fútbol.
     """
     nombre = models.CharField(_('nombre'), max_length=100, unique=True)
-    logo = models.ImageField(_('logo'), upload_to='equipos/logos/', blank=True, null=True)
+    # logo = models.ImageField(_('logo'), upload_to='equipos/logos/', blank=True, null=True)
     torneos = models.ManyToManyField('Torneo', related_name='equipos', blank=True, verbose_name=_('torneos'))
     imagen_url = models.URLField(
         max_length=500,  # Suficiente longitud para la URL de Imgur
@@ -110,7 +110,7 @@ class Jugador(models.Model):
     edad = models.PositiveSmallIntegerField(_('edad'), null=True, blank=True, editable=False)
     posicion = models.CharField(_('posición'), max_length=50)
     numero_de_camiseta = models.IntegerField(_('número de camiseta'), null=True, blank=True)
-    foto_de_perfil = models.ImageField(_('foto de perfil'), upload_to='fotos_perfil/', null=True, blank=True)
+    # foto_de_perfil = models.ImageField(_('foto de perfil'), upload_to='fotos_perfil/', null=True, blank=True)
     imagen_url = models.URLField(
         max_length=500,  # Suficiente longitud para la URL de Imgur
         null=True, 

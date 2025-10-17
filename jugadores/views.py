@@ -387,7 +387,7 @@ def agregar_jugador(request):
             posicion = form.cleaned_data['posicion']
             numero_de_camiseta = form.cleaned_data['numero_de_camiseta']
             equipo = form.cleaned_data['equipo']
-            foto_de_perfil = form.cleaned_data.get('foto_de_perfil')
+            imagen_url = form.cleaned_data.get('imagen_url')
             # La contraseña es obligatoria: validar presencia y longitud mínima
             if not password_custom:
                 form.add_error(None, 'La contraseña es obligatoria. Introduce una contraseña de al menos 8 caracteres.')
@@ -438,7 +438,7 @@ def agregar_jugador(request):
                             'posicion': posicion,
                             'numero_de_camiseta': numero_de_camiseta,
                             'equipo': equipo,
-                            'foto_de_perfil': foto_de_perfil,
+                            'imagen_url': imagen_url,
                             'cedula': cedula,
                         }
                     )
@@ -461,8 +461,8 @@ def agregar_jugador(request):
                             jugador.equipo = equipo
                             changed = True
                         # Actualizar foto si se envió una nueva
-                        if foto_de_perfil:
-                            jugador.imagen_url = foto_de_perfil
+                        if imagen_url:
+                            jugador.imagen_url = imagen_url
                             changed = True
                         if cedula and jugador.cedula != cedula:
                             jugador.cedula = cedula
@@ -496,10 +496,10 @@ def mostrar_credenciales_jugador(request):
 class EquipoForm(forms.ModelForm):
     class Meta:
         model = Equipo
-        fields = ['nombre', 'logo']
+        fields = ['nombre', 'imagen_url']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'logo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'imagen_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://...'}),
         }
 
 

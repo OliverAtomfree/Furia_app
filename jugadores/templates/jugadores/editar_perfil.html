@@ -1,4 +1,5 @@
 {% extends 'jugadores/base.html' %}
+{% load static %}
 
 {% block titulo %}Editar perfil{% endblock %}
 
@@ -8,16 +9,17 @@
     <div class="card p-4 shadow-sm">
       <div class="d-flex align-items-center gap-4">
         <div class="flex-shrink-0 text-center" style="width:140px">
+          {# Mostrar imagen remota si existe (imagen_url) o fallback a avatar #}
           {% if admin_edit and jugador and jugador.imagen_url %}
-            <img src="{{ jugador.imagen_url.url }}" alt="Foto de perfil" class="img-fluid rounded-circle border" style="width:120px; height:120px; object-fit:cover;">
+            <img id="currentAvatar" src="{{ jugador.imagen_url }}" alt="Foto de perfil" class="img-fluid rounded-circle border" style="width:120px; height:120px; object-fit:cover;">
           {% elif user.is_authenticated and user.jugador %}
             {% if user.jugador.imagen_url %}
-              <img src="{{ user.jugador.imagen_url.url }}" alt="Foto de perfil" class="img-fluid rounded-circle border" style="width:120px; height:120px; object-fit:cover;">
+              <img id="currentAvatar" src="{{ user.jugador.imagen_url }}" alt="Foto de perfil" class="img-fluid rounded-circle border" style="width:120px; height:120px; object-fit:cover;">
+            {% else %}
+              <img id="currentAvatar" src="{% static 'jugadores/images/avatar-placeholder.png' %}" alt="Avatar por defecto" class="img-fluid rounded-circle border" style="width:120px; height:120px; object-fit:cover;">
             {% endif %}
           {% else %}
-            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width:120px; height:120px;">
-              <i class="bi bi-person-fill" style="font-size:2.5rem; color:#fff"></i>
-            </div>
+            <img id="currentAvatar" src="{% static 'jugadores/images/avatar-placeholder.png' %}" alt="Avatar por defecto" class="img-fluid rounded-circle border" style="width:120px; height:120px; object-fit:cover;">
           {% endif %}
           <small class="d-block mt-2 text-muted">Foto de perfil</small>
         </div>
@@ -88,12 +90,12 @@
           </div>
 
           <div class="col-12 col-md-6">
-            <label class="form-label">Foto de perfil</label>
-            {{ form.foto_de_perfil }}
-            <div class="form-text">Sube una imagen cuadrada para mejor resultado. Máx 2MB.</div>
+            <label class="form-label">URL de la imagen (opcional)</label>
+            {{ form.imagen_url }}
+            <div class="form-text">Pega una URL de imagen (https://...). Si dejas vacío, se usará la imagen por defecto.</div>
             <div id="previewContainer" class="mt-2" aria-live="polite"></div>
-            {% if form.foto_de_perfil.errors %}
-              <div class="text-danger small">{{ form.foto_de_perfil.errors }}</div>
+            {% if form.imagen_url.errors %}
+              <div class="text-danger small">{{ form.imagen_url.errors }}</div>
             {% endif %}
           </div>
 
@@ -166,24 +168,35 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Preview de imagen
-  var input = document.querySelector('input[type="file"][name="foto_de_perfil"]');
+  // Preview de imagen a partir de URL
+  var inputUrl = document.querySelector('input[type="url"][name="imagen_url"]');
   var preview = document.getElementById('previewContainer');
-  if (input && preview) {
-    input.addEventListener('change', function(e) {
+  if (inputUrl && preview) {
+    function setPreviewFromUrl(url) {
       preview.innerHTML = '';
-      var file = e.target.files[0];
-      if (!file) return;
-      if (!file.type.startsWith('image/')) return;
+      if (!url) return;
       var img = document.createElement('img');
       img.className = 'rounded border';
       img.style.width = '120px';
       img.style.height = '120px';
       img.style.objectFit = 'cover';
+      img.src = url;
+      img.onerror = function() { preview.innerHTML = '<div class="text-muted">No se pudo cargar la imagen desde la URL proporcionada.</div>'; };
       preview.appendChild(img);
-      var reader = new FileReader();
-      reader.onload = function(ev) { img.src = ev.target.result; };
-      reader.readAsDataURL(file);
+    }
+    // preview inicial si el campo ya tiene valor, o mostrar placeholder por defecto
+    if (inputUrl.value) setPreviewFromUrl(inputUrl.value);
+    else {
+      var img = document.createElement('img');
+      img.className = 'rounded border';
+      img.style.width = '120px';
+      img.style.height = '120px';
+      img.style.objectFit = 'cover';
+      img.src = "{% static 'jugadores/images/avatar-placeholder.png' %}";
+      preview.appendChild(img);
+    }
+    inputUrl.addEventListener('input', function(e) {
+      setPreviewFromUrl(e.target.value);
     });
   }
 });

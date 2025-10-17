@@ -1,4 +1,5 @@
 {% extends 'jugadores/base.html' %}
+{% load static %}
 {% block titulo %}Lista de Equipos{% endblock %}
 {% block contenido %}
 <div class="container py-4">
@@ -15,11 +16,11 @@
     {% for equipo in equipos %}
       <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="card p-3 h-100 text-center shadow-lg">
-          {% if equipo.logo %}
-            <img src="{{ equipo.logo.url }}" class="rounded-circle mx-auto mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 2px 8px #260D4D;" alt="Logo del equipo">
-          {% else %}
-            <div class="rounded-circle mx-auto mb-2 bg-secondary d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; color: #fff; font-size: 2rem;"> <i class="bi bi-shield-fill"></i> </div>
-          {% endif %}
+            {% if equipo.imagen_url %}
+              <img src="{{ equipo.imagen_url }}" class="rounded-circle mx-auto mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 2px 8px #260D4D;" alt="Logo del equipo">
+            {% else %}
+              <img src="{% static 'jugadores/images/avatar-placeholder.png' %}" class="rounded-circle mx-auto mb-2" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 2px 8px #260D4D;" alt="Logo por defecto">
+            {% endif %}
           <h5 class="card-title mt-2">{{ equipo.nombre }}</h5>
           <p class="card-text mb-1"><span class="fw-bold">Torneos:</span> {% for torneo in equipo.torneos.all %}{{ torneo.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}-{% endfor %}</p>
         </div>

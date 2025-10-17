@@ -92,7 +92,7 @@ class JugadorForm(forms.ModelForm):
     class Meta:
         model = Jugador
         fields = [
-            'nombre', 'apellido', 'posicion', 'numero_de_camiseta', 'equipo', 'fecha_de_nacimiento', 'foto_de_perfil'
+            'nombre', 'apellido', 'posicion', 'numero_de_camiseta', 'equipo', 'fecha_de_nacimiento', 'imagen_url'
         ]
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Nombre')}),
@@ -101,7 +101,7 @@ class JugadorForm(forms.ModelForm):
             'numero_de_camiseta': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': _('Ej: 10'), 'min': 1}),
             'equipo': forms.Select(attrs={'class': 'form-select'}),
             'fecha_de_nacimiento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'foto_de_perfil': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'imagen_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://...'}),
         }
 
 

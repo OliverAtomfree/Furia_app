@@ -7,15 +7,15 @@ from .models import Tarjeta
 
 
 class EquipoAdmin(admin.ModelAdmin):
-    list_display = ('nombre',)
-    search_fields = ('nombre',)
+    list_display = ('nombre', 'imagen_url')
+    search_fields = ('nombre', 'imagen_url')
     filter_horizontal = ('torneos',)
     verbose_name = _('Equipo')
 
 
 class JugadorAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'apellido', 'posicion', 'equipo')
-    search_fields = ('nombre', 'apellido', 'equipo__nombre')
+    list_display = ('nombre', 'apellido', 'posicion', 'equipo', 'imagen_url')
+    search_fields = ('nombre', 'apellido', 'equipo__nombre', 'imagen_url')
 
 
 class PartidoAdmin(admin.ModelAdmin):
