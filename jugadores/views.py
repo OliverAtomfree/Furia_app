@@ -462,7 +462,7 @@ def agregar_jugador(request):
                             changed = True
                         # Actualizar foto si se envió una nueva
                         if foto_de_perfil:
-                            jugador.foto_de_perfil = foto_de_perfil
+                            jugador.imagen_url = foto_de_perfil
                             changed = True
                         if cedula and jugador.cedula != cedula:
                             jugador.cedula = cedula

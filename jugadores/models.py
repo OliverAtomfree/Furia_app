@@ -86,6 +86,11 @@ class Equipo(models.Model):
     nombre = models.CharField(_('nombre'), max_length=100, unique=True)
     logo = models.ImageField(_('logo'), upload_to='equipos/logos/', blank=True, null=True)
     torneos = models.ManyToManyField('Torneo', related_name='equipos', blank=True, verbose_name=_('torneos'))
+    imagen_url = models.URLField(
+        max_length=500,  # Suficiente longitud para la URL de Imgur
+        null=True, 
+        blank=True
+    )
 
     def __str__(self):
         return self.nombre
@@ -106,6 +111,11 @@ class Jugador(models.Model):
     posicion = models.CharField(_('posición'), max_length=50)
     numero_de_camiseta = models.IntegerField(_('número de camiseta'), null=True, blank=True)
     foto_de_perfil = models.ImageField(_('foto de perfil'), upload_to='fotos_perfil/', null=True, blank=True)
+    imagen_url = models.URLField(
+        max_length=500,  # Suficiente longitud para la URL de Imgur
+        null=True, 
+        blank=True
+    )
     equipo = models.ForeignKey(Equipo, on_delete=models.SET_NULL, null=True, default=get_default_equipo_id, verbose_name=_('equipo'))
 
     def __str__(self):

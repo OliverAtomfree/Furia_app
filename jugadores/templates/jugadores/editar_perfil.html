@@ -8,11 +8,11 @@
     <div class="card p-4 shadow-sm">
       <div class="d-flex align-items-center gap-4">
         <div class="flex-shrink-0 text-center" style="width:140px">
-          {% if admin_edit and jugador and jugador.foto_de_perfil %}
-            <img src="{{ jugador.foto_de_perfil.url }}" alt="Foto de perfil" class="img-fluid rounded-circle border" style="width:120px; height:120px; object-fit:cover;">
+          {% if admin_edit and jugador and jugador.imagen_url %}
+            <img src="{{ jugador.imagen_url.url }}" alt="Foto de perfil" class="img-fluid rounded-circle border" style="width:120px; height:120px; object-fit:cover;">
           {% elif user.is_authenticated and user.jugador %}
-            {% if user.jugador.foto_de_perfil %}
-              <img src="{{ user.jugador.foto_de_perfil.url }}" alt="Foto de perfil" class="img-fluid rounded-circle border" style="width:120px; height:120px; object-fit:cover;">
+            {% if user.jugador.imagen_url %}
+              <img src="{{ user.jugador.imagen_url.url }}" alt="Foto de perfil" class="img-fluid rounded-circle border" style="width:120px; height:120px; object-fit:cover;">
             {% endif %}
           {% else %}
             <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width:120px; height:120px;">

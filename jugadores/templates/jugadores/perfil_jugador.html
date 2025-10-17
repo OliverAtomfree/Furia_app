@@ -23,8 +23,8 @@
         <div class="text-center text-light py-5" style="background-color: #7B1FA2; position: relative;">
             <img src="/media/equipos/logos/Furia.png" alt="Escudo Furia Nocturna" class="position-absolute top-0 start-0 m-4" style="width: 15%;">
             <div class="d-inline-block p-2 bg-white rounded-circle mb-3" style="background-color: #CDDC39 !important">
-                {% if jugador.foto_de_perfil %}
-                    <img src="{{ jugador.foto_de_perfil.url }}" alt="Foto de perfil de {{ jugador.nombre }}" class="img-fluid rounded-circle" style="width: 200px; height: 200px; object-fit: cover;">
+                {% if jugador.imagen_url %}
+                    <img src="{{ jugador.imagen_url.url }}" alt="Foto de perfil de {{ jugador.nombre }}" class="img-fluid rounded-circle" style="width: 200px; height: 200px; object-fit: cover;">
                 {% else %}
                     <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" style="width: 200px; height: 200px;">
                         <span class="text-white fs-1 fw-bold">?</span>

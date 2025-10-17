@@ -45,12 +45,14 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -133,7 +135,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # La configuración estaba duplicada y en conflicto. Se ha consolidado en este bloque.
 
 # URL para servir archivos estáticos (CSS, JS, etc.)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 # Directorios adicionales donde Django buscará archivos estáticos
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'jugadores/static'),
@@ -153,3 +155,5 @@ LOGIN_URL = '/iniciar_sesion/'
 #   $env:REMOVE_BG_API_KEY = 'tu_api_key_aqui'
 # En producción, configúrala en el entorno del servidor.
 REMOVE_BG_API_KEY = os.environ.get('REMOVE_BG_API_KEY', '')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

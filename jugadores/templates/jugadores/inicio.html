@@ -74,8 +74,8 @@
             <div class="card h-100 shadow-sm border-0">
                 <a href="{% url 'perfil_jugador' jugador.id %}" class="text-decoration-none text-dark">
                     <div class="d-flex justify-content-center p-3">
-                        {% if jugador.foto_de_perfil %}
-                            <img src="{{ jugador.foto_de_perfil.url }}" alt="Foto de perfil de {{ jugador.nombre }}" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid var(--bs-warning);">
+                        {% if jugador.imagen_url %}
+                            <img src="{{ jugador.imagen_url.url }}" alt="Foto de perfil de {{ jugador.nombre }}" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid var(--bs-warning);">
                         {% else %}
                             <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
                                 <span class="text-white fs-1">?</span>
